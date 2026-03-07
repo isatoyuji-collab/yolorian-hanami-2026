@@ -61,7 +61,7 @@
   .tree-wrap{text-align:center;position:relative;padding:10px 0 6px;}
   .tree-svg-area{display:inline-block;position:relative;}
   .tree-svg-area svg{display:block;}
-  .tree-counter{margin-top:10px;font-size:0.75rem;color:#a06080;}
+  .tree-counter{margin-top:10px;font-size:0.75rem;color:#a06080;font-weight:700;}
   .tree-counter strong{font-family:'Dela Gothic One',sans-serif;font-size:1.1rem;color:var(--sakura-deep);}
   .bloom-particle{
     position:absolute;font-size:1.1rem;pointer-events:none;
@@ -235,7 +235,7 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
   </div>
 
   <div class="glass-card">
-    <div class="section-label"><i class="bi bi-tree-fill"></i> Our Sakura Tree / みんなで育てる桜</div>
+    <div class="section-label"><i class="bi bi-tree-fill"></i> Our Sakura Tree / 参加表明で花が咲く！</div>
     <div class="tree-wrap">
       <div class="tree-svg-area" id="treeSvgArea">
         <svg id="treeSvg" width="280" height="220" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
@@ -252,7 +252,7 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
         </svg>
       </div>
       <div class="tree-counter">
-        ヨロリアンの数だけ花が咲く🌸
+        🌸 ヨロリアンの参加数に応じて桜が満開になります
       </div>
     </div>
   </div>
@@ -285,13 +285,14 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       <button class="btn-rsvp-change" id="rsvpChangeBtn" style="display:none" onclick="upgradeToGo()">🙋 やっぱり「行くよ！」に変更する</button>
     </div>
   </div>
+  
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-geo-alt-fill"></i> Location / 場所 & 現在地</div>
     <div class="map-photo-grid">
       <div class="map-photo-item">
         <div class="map-photo-label"><i class="bi bi-map"></i> 地図</div>
         <div class="map-thumb"><div class="map-pin">📍</div><div class="map-name">大阪城公園</div></div>
-       <a href="https://www.google.com/maps/search/?api=1&query=大阪城公園" class="btn-map-small"><i class="bi bi-map"></i> Google Mapsで開く</a>
+       <a href="https://maps.google.com/?q=大阪城公園" class="btn-map-small"><i class="bi bi-map"></i> Google Mapsで開く</a>
       </div>
       <div class="map-photo-item">
         <div class="map-photo-label"><i class="bi bi-camera-fill"></i> 現在地</div>
@@ -349,7 +350,7 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
   <div class="admin-panel" id="adminPanel">
     <div class="admin-header">
       <div class="admin-header-row">
-        <div class="admin-title">🔑 幹事モード — 参加者リスト</div>
+        <div class="admin-title">🔑 幹事モード — 管理画面</div>
         <button class="admin-close" onclick="closeAdminPanel()">閉じる</button>
       </div>
     </div>
@@ -385,21 +386,33 @@ const CLOUDINARY_CLOUD = 'dohyqxvje';
 const CLOUDINARY_PRESET = 'hanami_live';
 const CLOUDINARY_PUBLIC_ID = 'hanami/latest';
 
-// ===== 花びら背景 =====
+// ===== 🍃 花びら背景（コメント連動ギミック） =====
 const emojis=['🌸','🌺','🌷','✿','❀'];
 const cont=document.getElementById('petalContainer');
-for(let i=0;i<18;i++){
-  const p=document.createElement('div'); p.className='petal';
-  p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-  p.style.left=Math.random()*100+'%';
-  p.style.animationDuration=(5+Math.random()*8)+'s';
-  p.style.animationDelay=(-Math.random()*10)+'s';
-  p.style.fontSize=(1+Math.random()*0.8)+'rem';
-  p.style.opacity=0.4+Math.random()*0.4;
-  cont.appendChild(p);
-}
+let currentPetalCount = 0;
 
-// ===== 桜の木 =====
+function updatePetals(uniqueUserCount) {
+  // 初期5枚 + (ユニークユーザー数 × 3) 枚、最大50枚まで
+  const targetCount = Math.min(5 + (uniqueUserCount * 3), 50);
+  
+  if (targetCount > currentPetalCount) {
+    const diff = targetCount - currentPetalCount;
+    for(let i=0; i<diff; i++){
+      const p=document.createElement('div'); p.className='petal';
+      p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      p.style.left=Math.random()*100+'%';
+      p.style.animationDuration=(5+Math.random()*8)+'s';
+      p.style.animationDelay=(-Math.random()*10)+'s';
+      p.style.fontSize=(1+Math.random()*0.8)+'rem';
+      p.style.opacity=0.4+Math.random()*0.4;
+      cont.appendChild(p);
+    }
+    currentPetalCount = targetCount;
+  }
+}
+updatePetals(0); // 画面を開いた時は初期の5枚
+
+// ===== 🌸 桜の木（15人で満開ギミック） =====
 const branchTips=[
   {x:85,y:120},{x:100,y:85},{x:140,y:70},{x:185,y:85},{x:195,y:122},
   {x:70,y:108},{x:92,y:72},{x:140,y:55},{x:192,y:70},{x:210,y:110},
@@ -408,7 +421,7 @@ const branchTips=[
   {x:42,y:158},{x:65,y:38},{x:215,y:38},{x:238,y:156},{x:140,y:18},
   {x:112,y:40},{x:168,y:40},{x:95,y:100},{x:185,y:100},{x:140,y:85},
 ];
-let bloomCount=4;
+let bloomCount=0; // 最初は0からスタート
 const bloomGroup=document.getElementById('bloomGroup');
 
 function renderBlooms(count){
@@ -435,9 +448,7 @@ function renderBlooms(count){
 }
 
 function addBloom(){
-  if(bloomCount>=branchTips.length) return;
-  bloomCount++;
-  renderBlooms(bloomCount);
+  // 花を咲かせるアニメーション用
   const area=document.getElementById('treeSvgArea');
   const rect=area.getBoundingClientRect();
   for(let i=0;i<4;i++){
@@ -543,7 +554,7 @@ function loadLivePhoto(){
 loadLivePhoto();
 setInterval(loadLivePhoto, 3 * 60 * 1000);
 
-// ===== RSVP =====
+// ===== RSVP (参加表明の取得と桜の反映) =====
 let rsvpCount = 0;
 const savedStatus = localStorage.getItem(RSVP_STATUS_KEY);
 if(savedStatus) showRsvpStatus(savedStatus, localStorage.getItem(NAME_KEY));
@@ -552,7 +563,8 @@ waitForFirebase((db, fs)=>{
   const {collection, onSnapshot, query} = fs;
   onSnapshot(query(collection(db,'rsvp')), snap=>{
     const count = snap.size;
-    const target = Math.min(4 + count, branchTips.length);
+    // 🌸 1人につき2つの花が咲く（15人で30箇所満開！）
+    const target = Math.min(count * 2, branchTips.length);
     if(target > bloomCount){
       bloomCount = target;
       renderBlooms(bloomCount);
@@ -636,17 +648,27 @@ function closeNameModal(){
 }
 document.getElementById('modalNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitRSVPName();});
 
-// ===== 掲示板（Firestore） =====
+// ===== 掲示板（Firestore取得と花びら連動） =====
 waitForFirebase((db,fs)=>{
-  const {collection,onSnapshot,query,orderBy,limit}=fs;
-  const q=query(collection(db,'messages'),orderBy('ts','desc'),limit(20));
+  const {collection,onSnapshot,query,orderBy}=fs;
+  const q=query(collection(db,'messages'),orderBy('ts','desc'));
   let first=true;
   onSnapshot(q,snap=>{
+    
+    // 🍃 ユニークユーザー数を数えて花びらの枚数を更新！
+    const uniqueNames = new Set();
+    snap.docs.forEach(d => {
+       const data = d.data();
+       if(data.name) uniqueNames.add(data.name);
+    });
+    updatePetals(uniqueNames.size);
+
     if(first){
       first=false;
       const list=document.getElementById('messagesList');
       list.innerHTML='';
-      snap.docs.reverse().forEach(d=>appendMessage(d.data()));
+      // 画面のUIには最新20件だけを表示
+      snap.docs.slice(0, 20).reverse().forEach(d=>appendMessage(d.data()));
     } else {
       snap.docChanges().forEach(change=>{
         if(change.type==='added') prependMessage(change.doc.data());
@@ -667,6 +689,7 @@ function prependMessage(data){
 function createBubble(data){
   const bubble=document.createElement('div'); bubble.className='message-bubble';
   const time = data.ts ? new Date(data.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}) : '--:--';
+  // 文字化け・荒らし対策（サニタイズ）
   const safeText = (data.text||'').replace(/</g,'&lt;');
   bubble.innerHTML=`<div class="msg-header"><span class="msg-name">🌸 ${data.name||'ヨロリアン'}</span><span class="msg-time">${time}</span></div><div class="msg-text">${safeText}</div>`;
   return bubble;
@@ -676,6 +699,7 @@ function postMessage(){
   const input=document.getElementById('msgInput');
   const text=input.value.trim(); if(!text)return;
 
+  // 名前が未登録ならポップアップで聞く
   let name = localStorage.getItem(NAME_KEY);
   if (!name) {
     name = prompt("コメントを投稿するためのお名前を教えてください🌸");
