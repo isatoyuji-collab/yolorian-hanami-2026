@@ -177,8 +177,8 @@
   .modal-error{font-size:0.75rem;color:#e05070;text-align:center;margin-top:-6px;margin-bottom:10px;display:none;}
 
   /* ADMIN PANEL */
-  .admin-panel{position:fixed;inset:0;z-index:300;background:#fff5f7;overflow-y:auto;display:none;}
-  .admin-header{background:linear-gradient(135deg,#2d1a2e,#4a2040);color:white;padding:20px 20px 16px;position:sticky;top:0;}
+  .admin-panel{position:fixed;inset:0;z-index:9999;background:#fff5f7;overflow-y:auto;display:none;}
+  .admin-header{background:linear-gradient(135deg,#2d1a2e,#4a2040);color:white;padding:calc(20px + env(safe-area-inset-top)) 20px 16px;position:sticky;top:0;z-index:10000;}
   .admin-header-row{max-width:420px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
   .admin-title{font-family:'Dela Gothic One',sans-serif;font-size:1.1rem;}
   .admin-close{background:rgba(255,255,255,0.15);border:none;color:white;border-radius:10px;padding:6px 14px;font-family:'Zen Maru Gothic',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;}
@@ -191,10 +191,9 @@
   .admin-name{font-size:0.95rem;font-weight:700;flex:1;}
   .admin-time{font-size:0.65rem;color:#c0a0b0;}
 </style>
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyABVzb-96iPwmhAiMxFW7xj98pt54lzhF0",
@@ -208,16 +207,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Firebaseをグローバルに公開
 window._db = db;
-window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp };
+window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp, deleteDoc };
 </script>
 </head>
 <body>
 <div class="bg-mesh"></div>
 <div class="petal-bg" id="petalContainer"></div>
 
-<!-- HEADER -->
 <header class="sticky-header">
   <div class="header-top">
     <div class="header-title" id="headerTitle" style="user-select:none;-webkit-user-select:none;">🌸 ヨロリアン桜集合！</div>
@@ -231,32 +228,26 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
 
 <main>
 
-  <!-- HERO -->
   <div class="hero">
     <span class="hero-emoji">🌸</span>
     <h1 class="hero-title">去る人も残る人も<br>みんなで春を！</h1>
     <p class="hero-sub">2026年4月4日（土）14:00〜21:00<br>大阪城公園 / BYOB・飲めない人も大歓迎</p>
   </div>
 
-  <!-- SAKURA TREE -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-tree-fill"></i> Our Sakura Tree / みんなで育てる桜</div>
     <div class="tree-wrap">
       <div class="tree-svg-area" id="treeSvgArea">
         <svg id="treeSvg" width="280" height="220" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
-          <!-- 幹 -->
           <path d="M130 210 Q128 170 125 150 Q122 130 130 110" stroke="#a0724a" stroke-width="10" fill="none" stroke-linecap="round"/>
           <path d="M150 210 Q152 170 155 150 Q158 130 150 110" stroke="#a0724a" stroke-width="10" fill="none" stroke-linecap="round"/>
           <path d="M130 210 L150 210" stroke="#a0724a" stroke-width="10" fill="none"/>
-          <!-- 枝 -->
           <path d="M138 150 Q110 140 85 120" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
           <path d="M140 140 Q115 110 100 85" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
           <path d="M142 130 Q145 95 140 70" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
           <path d="M144 140 Q170 110 185 85" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
           <path d="M142 150 Q168 138 195 122" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <!-- 芝生 -->
           <ellipse cx="140" cy="212" rx="90" ry="8" fill="#c8e6a0" opacity="0.6"/>
-          <!-- 花グループ（JSで追加） -->
           <g id="bloomGroup"></g>
         </svg>
       </div>
@@ -266,14 +257,12 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
-  <!-- WEATHER -->
   <div class="glass-card" id="weatherCard">
     <div class="section-label"><i class="bi bi-cloud-sun-fill"></i> Weather / 天気予報</div>
-    <div id="weatherContent"><!-- JSで描画 --></div>
+    <div id="weatherContent"></div>
     <div class="weather-note" id="weatherNote"></div>
   </div>
 
-  <!-- EVENT INFO -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-calendar3"></i> Event Info</div>
     <div class="info-grid">
@@ -284,25 +273,20 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
-
-  <!-- RSVP -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-people-fill"></i> RSVP / 参加表明</div>
-    <!-- ボタン群 -->
     <div id="rsvpButtons">
       <button class="btn-rsvp go" onclick="doRSVP('go')">🙋 行くよ！</button>
       <button class="btn-rsvp maybe" onclick="doRSVP('maybe')" style="margin-top:10px">🤔 たぶん行く…</button>
       <button class="btn-rsvp watch" onclick="doRSVP('watch')" style="margin-top:10px">👀 当日決める！</button>
     </div>
-    <!-- 選択後ステータス -->
     <div id="rsvpStatus" style="display:none">
       <div class="rsvp-status-box" id="rsvpStatusBox"></div>
       <button class="btn-rsvp-change" id="rsvpChangeBtn" style="display:none" onclick="upgradeToGo()">🙋 やっぱり「行くよ！」に変更する</button>
     </div>
   </div>
-  <!-- MAP + LIVE PHOTO -->
   <div class="glass-card">
-    <div class="section-label"><i class="bi bi-geo-alt-fill"></i> Location / 場所 &amp; 現在地</div>
+    <div class="section-label"><i class="bi bi-geo-alt-fill"></i> Location / 場所 & 現在地</div>
     <div class="map-photo-grid">
       <div class="map-photo-item">
         <div class="map-photo-label"><i class="bi bi-map"></i> 地図</div>
@@ -321,7 +305,6 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
-  <!-- OMIKUJI -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-stars"></i> Omikuji / お花見おみくじ</div>
     <div class="omikuji-result" id="omikujiResult">
@@ -330,7 +313,6 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     <button class="btn-omikuji" onclick="drawOmikuji()">🎋 おみくじを引く</button>
   </div>
 
-  <!-- MESSAGE BOARD -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-chat-heart-fill"></i> Message Board / 一言どうぞ！</div>
     <div class="message-input-wrap">
@@ -344,7 +326,6 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
-  <!-- 名前入力モーダル（RSVP時） -->
   <div class="modal-overlay" id="nameModal" style="display:none">
     <div class="modal-box">
       <span class="modal-emoji">🙋</span>
@@ -356,7 +337,6 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
-  <!-- 管理者パスワードモーダル -->
   <div class="modal-overlay" id="adminModal" style="display:none">
     <div class="modal-box">
       <span class="modal-emoji">🔑</span>
@@ -369,7 +349,6 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
-  <!-- 管理者パネル -->
   <div class="admin-panel" id="adminPanel">
     <div class="admin-header">
       <div class="admin-header-row">
@@ -381,7 +360,6 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       <div class="admin-count" id="adminCount">0</div>
       <div class="admin-count-label">人が参加表明しています</div>
 
-      <!-- Live Photo アップロード -->
       <div style="background:white;border-radius:20px;padding:16px;margin-bottom:20px;border:1px solid rgba(255,183,197,0.3);">
         <div style="font-size:0.72rem;font-weight:700;color:#c070a0;margin-bottom:10px;">📸 Live Photo を更新</div>
         <input type="file" id="livePhotoInput" accept="image/*" capture="environment" style="display:none">
@@ -392,6 +370,120 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       </div>
 
       <div class="admin-list" id="adminList"></div>
+      <div style="margin-top:32px; padding-top:20px; border-top:1px dashed #f0729a;">
+        <div style="font-size:0.75rem;font-weight:700;color:#c070a0;margin-bottom:12px;"><i class="bi bi-chat-heart-fill"></i> 掲示板の管理</div>
+        <div class="admin-list" id="adminMessagesList"></div>
+      </div>
+      ```
+
+*(追加する場所の目安)*
+```html
+      <div class="admin-list" id="adminList"></div>
+
+      </div> </div> ```
+
+---
+
+### 手順2：JavaScriptを差し替える（表示と削除機能）
+
+下の方にある `function openAdminPanel()` をまるごと以下のコードに差し替えてください。さらに、その下に `deleteMessage` というメッセージ削除用の関数も新しく足してあります。
+
+**【差し替えるコード】**
+```javascript
+function openAdminPanel(){
+  document.getElementById('adminPanel').style.display='block';
+  waitForFirebase((db,fs)=>{
+    const {collection,onSnapshot,query,orderBy}=fs;
+    
+    // --- ① 参加者リストの取得 ---
+    const qRsvp=query(collection(db,'rsvp'),orderBy('ts','asc'));
+    onSnapshot(qRsvp,snap=>{
+      const docs=snap.docs.map(d=>({ id: d.id, ...d.data() }));
+      const goList=docs.filter(r=>r.status==='go');
+      const maybeList=docs.filter(r=>r.status==='maybe');
+      document.getElementById('adminCount').textContent=goList.length+maybeList.length;
+      const list=document.getElementById('adminList');
+      if(!list) return;
+      list.innerHTML='';
+      
+      if(goList.length>0){
+        const h=document.createElement('div');
+        h.style.cssText='font-size:0.68rem;font-weight:700;color:#2ecc71;letter-spacing:0.1em;margin:4px 0 8px;';
+        h.textContent='✅ 行くよ！ — '+goList.length+'人';
+        list.appendChild(h);
+        goList.forEach((r,i)=>{
+          const item=document.createElement('div'); item.className='admin-list-item';
+          const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
+          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>
+          <button onclick="deleteRSVP('${r.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>`;
+          list.appendChild(item);
+        });
+      }
+      if(maybeList.length>0){
+        const h=document.createElement('div');
+        h.style.cssText='font-size:0.68rem;font-weight:700;color:#f0729a;letter-spacing:0.1em;margin:16px 0 8px;';
+        h.textContent='🤔 たぶん行く — '+maybeList.length+'人';
+        list.appendChild(h);
+        maybeList.forEach((r,i)=>{
+          const item=document.createElement('div'); item.className='admin-list-item';
+          const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
+          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>
+          <button onclick="deleteRSVP('${r.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>`;
+          list.appendChild(item);
+        });
+      }
+      if(docs.length===0) list.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだ参加表明がありません</div>';
+    });
+
+    // --- ② 掲示板メッセージの取得（新規追加部分） ---
+    const qMsg=query(collection(db,'messages'),orderBy('ts','desc'));
+    onSnapshot(qMsg,snap=>{
+      const msgList=document.getElementById('adminMessagesList');
+      if(!msgList) return;
+      msgList.innerHTML='';
+      if(snap.empty) {
+        msgList.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだメッセージはありません</div>';
+        return;
+      }
+      snap.docs.forEach((d, i)=>{
+        const m = d.data();
+        const item=document.createElement('div'); item.className='admin-list-item';
+        const time=m.ts?new Date(m.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
+        const safeText = (m.text||'').replace(/</g,'&lt;');
+        // 誰の書き込みかわかるように名前と本文を両方表示
+        item.innerHTML=`
+          <div class="admin-num">${i+1}</div>
+          <div class="admin-name" style="line-height:1.4;">
+            <span style="font-size:0.7rem;color:#c070a0;">🌸 ${m.name}</span><br>
+            <span style="font-size:0.85rem;">${safeText}</span>
+          </div>
+          <div class="admin-time">${time}</div>
+          <button onclick="deleteMessage('${d.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>
+        `;
+        msgList.appendChild(item);
+      });
+    });
+  });
+}
+
+function deleteRSVP(docId) {
+  if(!confirm('この参加表明を削除しますか？\n（本人の画面では参加済みのままになります）')) return;
+  waitForFirebase((db, fs) => {
+    const { doc, deleteDoc } = fs;
+    deleteDoc(doc(db, 'rsvp', docId)).catch(err => alert('削除に失敗しました'));
+  });
+}
+
+// ▼ 新しく追加するメッセージ削除機能 ▼
+function deleteMessage(docId) {
+  if(!confirm('このメッセージを削除しますか？')) return;
+  waitForFirebase((db, fs) => {
+    const { doc, deleteDoc } = fs;
+    deleteDoc(doc(db, 'messages', docId)).catch(err => alert('削除に失敗しました'));
+  });
+}
+
+function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
     </div>
   </div>
 
@@ -706,18 +798,28 @@ function createBubble(data){
 function postMessage(){
   const input=document.getElementById('msgInput');
   const text=input.value.trim(); if(!text)return;
+
+  // 1. スマホに名前が保存されているかチェック
+  let name = localStorage.getItem(NAME_KEY);
+
+  // 2. 名前がない場合（未登録）は、ポップアップを出して名前を聞く
+  if (!name) {
+    name = prompt("コメントを投稿するためのお名前を教えてください🌸");
+    // キャンセルされたり、空欄のままOKを押されたら投稿をストップ
+    if (!name || name.trim() === "") {
+      return; 
+    }
+    // 入力してくれたら、次回以降のためにスマホに名前を保存しておく
+    localStorage.setItem(NAME_KEY, name.trim());
+  }
+
+  // 3. 投稿処理（入力欄を空にしてFirestoreへ送信）
   input.value='';
-  const status=localStorage.getItem(RSVP_STATUS_KEY);
-  const name=localStorage.getItem(NAME_KEY);
-  const displayName=(status==='go'||status==='maybe')&&name?name:'ヨロリアン';
   waitForFirebase((db,fs)=>{
     const {collection,addDoc,serverTimestamp}=fs;
-    addDoc(collection(db,'messages'),{name:displayName,text,ts:serverTimestamp()}).catch(()=>{});
+    addDoc(collection(db,'messages'),{name: name.trim(), text, ts:serverTimestamp()}).catch(()=>{});
   });
-  addBloom();
 }
-document.getElementById('msgInput').addEventListener('keydown',e=>{if(e.key==='Enter')postMessage();});
-
 // ===== 管理者モード =====
 let pressTimer=null;
 const titleEl=document.getElementById('headerTitle');
@@ -743,12 +845,14 @@ function openAdminPanel(){
     const {collection,onSnapshot,query,orderBy}=fs;
     const q=query(collection(db,'rsvp'),orderBy('ts','asc'));
     onSnapshot(q,snap=>{
-      const docs=snap.docs.map(d=>d.data());
+      // ▼ d.id（ドキュメントID）も一緒に取得するように変更
+      const docs=snap.docs.map(d=>({ id: d.id, ...d.data() }));
       const goList=docs.filter(r=>r.status==='go');
       const maybeList=docs.filter(r=>r.status==='maybe');
       document.getElementById('adminCount').textContent=goList.length+maybeList.length;
       const list=document.getElementById('adminList');
       list.innerHTML='';
+      
       if(goList.length>0){
         const h=document.createElement('div');
         h.style.cssText='font-size:0.68rem;font-weight:700;color:#2ecc71;letter-spacing:0.1em;margin:4px 0 8px;';
@@ -757,7 +861,9 @@ function openAdminPanel(){
         goList.forEach((r,i)=>{
           const item=document.createElement('div'); item.className='admin-list-item';
           const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
-          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>`;
+          // ▼ ゴミ箱ボタンを追加
+          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>
+          <button onclick="deleteRSVP('${r.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>`;
           list.appendChild(item);
         });
       }
@@ -769,7 +875,9 @@ function openAdminPanel(){
         maybeList.forEach((r,i)=>{
           const item=document.createElement('div'); item.className='admin-list-item';
           const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
-          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>`;
+          // ▼ ゴミ箱ボタンを追加
+          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>
+          <button onclick="deleteRSVP('${r.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>`;
           list.appendChild(item);
         });
       }
@@ -777,7 +885,18 @@ function openAdminPanel(){
     });
   });
 }
+
+// ▼ 新しく追加する削除実行の関数 ▼
+function deleteRSVP(docId) {
+  if(!confirm('この参加表明を削除しますか？\n（本人の画面では参加済みのままになります）')) return;
+  waitForFirebase((db, fs) => {
+    const { doc, deleteDoc } = fs;
+    deleteDoc(doc(db, 'rsvp', docId)).catch(err => alert('削除に失敗しました'));
+  });
+}
+
 function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
+
 
 // ===== Live Photo アップロード（幹事用） =====
 document.getElementById('livePhotoInput').addEventListener('change', async(e)=>{
@@ -797,5 +916,5 @@ document.getElementById('livePhotoInput').addEventListener('change', async(e)=>{
 });
 </script>
 
-
+</body>
 </html>
