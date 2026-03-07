@@ -320,10 +320,7 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       <button class="btn-post" onclick="postMessage()">🌸</button>
     </div>
     <div class="messages-list" id="messagesList">
-      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">13:42</span></div><div class="msg-text">お疲れ様でした！絶対行きます！！</div></div>
-      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">13:55</span></div><div class="msg-text">レジャーシート持っていくね〜</div></div>
-      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">14:01</span></div><div class="msg-text">みんなと最後にお花見できて嬉しい🌸</div></div>
-    </div>
+      </div>
   </div>
 
   <div class="modal-overlay" id="nameModal" style="display:none">
@@ -370,120 +367,12 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       </div>
 
       <div class="admin-list" id="adminList"></div>
+
       <div style="margin-top:32px; padding-top:20px; border-top:1px dashed #f0729a;">
         <div style="font-size:0.75rem;font-weight:700;color:#c070a0;margin-bottom:12px;"><i class="bi bi-chat-heart-fill"></i> 掲示板の管理</div>
         <div class="admin-list" id="adminMessagesList"></div>
       </div>
-      ```
-
-*(追加する場所の目安)*
-```html
-      <div class="admin-list" id="adminList"></div>
-
-      </div> </div> ```
-
----
-
-### 手順2：JavaScriptを差し替える（表示と削除機能）
-
-下の方にある `function openAdminPanel()` をまるごと以下のコードに差し替えてください。さらに、その下に `deleteMessage` というメッセージ削除用の関数も新しく足してあります。
-
-**【差し替えるコード】**
-```javascript
-function openAdminPanel(){
-  document.getElementById('adminPanel').style.display='block';
-  waitForFirebase((db,fs)=>{
-    const {collection,onSnapshot,query,orderBy}=fs;
-    
-    // --- ① 参加者リストの取得 ---
-    const qRsvp=query(collection(db,'rsvp'),orderBy('ts','asc'));
-    onSnapshot(qRsvp,snap=>{
-      const docs=snap.docs.map(d=>({ id: d.id, ...d.data() }));
-      const goList=docs.filter(r=>r.status==='go');
-      const maybeList=docs.filter(r=>r.status==='maybe');
-      document.getElementById('adminCount').textContent=goList.length+maybeList.length;
-      const list=document.getElementById('adminList');
-      if(!list) return;
-      list.innerHTML='';
       
-      if(goList.length>0){
-        const h=document.createElement('div');
-        h.style.cssText='font-size:0.68rem;font-weight:700;color:#2ecc71;letter-spacing:0.1em;margin:4px 0 8px;';
-        h.textContent='✅ 行くよ！ — '+goList.length+'人';
-        list.appendChild(h);
-        goList.forEach((r,i)=>{
-          const item=document.createElement('div'); item.className='admin-list-item';
-          const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
-          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>
-          <button onclick="deleteRSVP('${r.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>`;
-          list.appendChild(item);
-        });
-      }
-      if(maybeList.length>0){
-        const h=document.createElement('div');
-        h.style.cssText='font-size:0.68rem;font-weight:700;color:#f0729a;letter-spacing:0.1em;margin:16px 0 8px;';
-        h.textContent='🤔 たぶん行く — '+maybeList.length+'人';
-        list.appendChild(h);
-        maybeList.forEach((r,i)=>{
-          const item=document.createElement('div'); item.className='admin-list-item';
-          const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
-          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>
-          <button onclick="deleteRSVP('${r.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>`;
-          list.appendChild(item);
-        });
-      }
-      if(docs.length===0) list.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだ参加表明がありません</div>';
-    });
-
-    // --- ② 掲示板メッセージの取得（新規追加部分） ---
-    const qMsg=query(collection(db,'messages'),orderBy('ts','desc'));
-    onSnapshot(qMsg,snap=>{
-      const msgList=document.getElementById('adminMessagesList');
-      if(!msgList) return;
-      msgList.innerHTML='';
-      if(snap.empty) {
-        msgList.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだメッセージはありません</div>';
-        return;
-      }
-      snap.docs.forEach((d, i)=>{
-        const m = d.data();
-        const item=document.createElement('div'); item.className='admin-list-item';
-        const time=m.ts?new Date(m.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
-        const safeText = (m.text||'').replace(/</g,'&lt;');
-        // 誰の書き込みかわかるように名前と本文を両方表示
-        item.innerHTML=`
-          <div class="admin-num">${i+1}</div>
-          <div class="admin-name" style="line-height:1.4;">
-            <span style="font-size:0.7rem;color:#c070a0;">🌸 ${m.name}</span><br>
-            <span style="font-size:0.85rem;">${safeText}</span>
-          </div>
-          <div class="admin-time">${time}</div>
-          <button onclick="deleteMessage('${d.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>
-        `;
-        msgList.appendChild(item);
-      });
-    });
-  });
-}
-
-function deleteRSVP(docId) {
-  if(!confirm('この参加表明を削除しますか？\n（本人の画面では参加済みのままになります）')) return;
-  waitForFirebase((db, fs) => {
-    const { doc, deleteDoc } = fs;
-    deleteDoc(doc(db, 'rsvp', docId)).catch(err => alert('削除に失敗しました'));
-  });
-}
-
-// ▼ 新しく追加するメッセージ削除機能 ▼
-function deleteMessage(docId) {
-  if(!confirm('このメッセージを削除しますか？')) return;
-  waitForFirebase((db, fs) => {
-    const { doc, deleteDoc } = fs;
-    deleteDoc(doc(db, 'messages', docId)).catch(err => alert('削除に失敗しました'));
-  });
-}
-
-function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
     </div>
   </div>
 
@@ -571,22 +460,18 @@ const isEventDay = new Date().getFullYear()===2026 && new Date().getMonth()===3 
 const weatherContent=document.getElementById('weatherContent');
 const weatherNote=document.getElementById('weatherNote');
 
-// 4/4当日の予報は、直前までAPIで取得できないため固定（イベント1週間前になったらここもAPI連携できます）
 const eventMock={icon:'🌸',temp:'18',desc:'晴れ！お花見日和',range:'↑21° ↓12°'};
 
 async function fetchRealWeather() {
   try {
-    // 大阪城公園の緯度経度(34.6864, 135.5262)でOpen-Meteoから天気データを取得
     const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.6864&longitude=135.5262&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo');
     const data = await res.json();
 
-    // 取得したデータから必要な数値を抜き出す
     const currentTemp = Math.round(data.current_weather.temperature);
     const maxTemp = Math.round(data.daily.temperature_2m_max[0]);
     const minTemp = Math.round(data.daily.temperature_2m_min[0]);
     const weatherCode = data.current_weather.weathercode;
 
-    // 天気コードをアイコンと日本語に変換
     let icon = '⛅'; let desc = 'くもり';
     if(weatherCode === 0) { icon = '☀️'; desc = '快晴'; }
     else if(weatherCode <= 3) { icon = '⛅'; desc = '晴れ時々くもり'; }
@@ -597,7 +482,6 @@ async function fetchRealWeather() {
 
     const todayReal = { icon: icon, temp: currentTemp, desc: desc, range: `↑${maxTemp}° ↓${minTemp}°` };
 
-    // 画面に描画
     if(isEventDay){
       weatherContent.innerHTML=`<div class="weather-single" style="padding:20px"><div class="weather-label blue" style="font-size:0.75rem;margin-bottom:8px">🌸 今日はお花見当日！</div><span class="weather-icon-lg">${todayReal.icon}</span><div class="weather-temp-lg">${todayReal.temp}<span>°C</span></div><div class="weather-desc" style="font-size:0.85rem;margin-top:6px">${todayReal.desc}</div><div class="weather-range" style="font-size:0.78rem;margin-top:4px">${todayReal.range}</div></div>`;
       weatherNote.textContent='📍 大阪城公園のリアルタイム天気';
@@ -610,7 +494,6 @@ async function fetchRealWeather() {
     weatherNote.textContent='📍 天気情報の取得に失敗しました';
   }
 }
-
 fetchRealWeather();
 
 // ===== おみくじ =====
@@ -654,11 +537,10 @@ function loadLivePhoto(){
   img.onload = () => {
     thumb.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:18px;"><div class="live-dot-badge"><div class="photo-dot"></div> LIVE</div>`;
   };
-  img.onerror = () => {}; // 画像なければプレースホルダーのまま
+  img.onerror = () => {}; 
   img.src = url;
 }
 loadLivePhoto();
-// 3分ごとに自動更新
 setInterval(loadLivePhoto, 3 * 60 * 1000);
 
 // ===== RSVP =====
@@ -666,13 +548,10 @@ let rsvpCount = 0;
 const savedStatus = localStorage.getItem(RSVP_STATUS_KEY);
 if(savedStatus) showRsvpStatus(savedStatus, localStorage.getItem(NAME_KEY));
 
-// Firestoreからブルーム数を反映
 waitForFirebase((db, fs)=>{
   const {collection, onSnapshot, query} = fs;
-  // RSVP リアルタイム購読
   onSnapshot(query(collection(db,'rsvp')), snap=>{
     const count = snap.size;
-    // bloomに反映（ベース4 + Firestore件数）
     const target = Math.min(4 + count, branchTips.length);
     if(target > bloomCount){
       bloomCount = target;
@@ -759,19 +638,16 @@ document.getElementById('modalNameInput').addEventListener('keydown',e=>{if(e.ke
 
 // ===== 掲示板（Firestore） =====
 waitForFirebase((db,fs)=>{
-  const {collection,onSnapshot,query,orderBy,limit,addDoc,serverTimestamp}=fs;
-  // 最新20件をリアルタイム購読
+  const {collection,onSnapshot,query,orderBy,limit}=fs;
   const q=query(collection(db,'messages'),orderBy('ts','desc'),limit(20));
   let first=true;
   onSnapshot(q,snap=>{
     if(first){
-      // 初回：全件描画
       first=false;
       const list=document.getElementById('messagesList');
       list.innerHTML='';
       snap.docs.reverse().forEach(d=>appendMessage(d.data()));
     } else {
-      // 差分のみ追加
       snap.docChanges().forEach(change=>{
         if(change.type==='added') prependMessage(change.doc.data());
       });
@@ -791,7 +667,8 @@ function prependMessage(data){
 function createBubble(data){
   const bubble=document.createElement('div'); bubble.className='message-bubble';
   const time = data.ts ? new Date(data.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}) : '--:--';
-  bubble.innerHTML=`<div class="msg-header"><span class="msg-name">🌸 ${data.name||'ヨロリアン'}</span><span class="msg-time">${time}</span></div><div class="msg-text">${(data.text||'').replace(/</g,'&lt;')}</div>`;
+  const safeText = (data.text||'').replace(/</g,'&lt;');
+  bubble.innerHTML=`<div class="msg-header"><span class="msg-name">🌸 ${data.name||'ヨロリアン'}</span><span class="msg-time">${time}</span></div><div class="msg-text">${safeText}</div>`;
   return bubble;
 }
 
@@ -799,27 +676,20 @@ function postMessage(){
   const input=document.getElementById('msgInput');
   const text=input.value.trim(); if(!text)return;
 
-  // 1. スマホに名前が保存されているかチェック
   let name = localStorage.getItem(NAME_KEY);
-
-  // 2. 名前がない場合（未登録）は、ポップアップを出して名前を聞く
   if (!name) {
     name = prompt("コメントを投稿するためのお名前を教えてください🌸");
-    // キャンセルされたり、空欄のままOKを押されたら投稿をストップ
-    if (!name || name.trim() === "") {
-      return; 
-    }
-    // 入力してくれたら、次回以降のためにスマホに名前を保存しておく
+    if (!name || name.trim() === "") return; 
     localStorage.setItem(NAME_KEY, name.trim());
   }
 
-  // 3. 投稿処理（入力欄を空にしてFirestoreへ送信）
   input.value='';
   waitForFirebase((db,fs)=>{
     const {collection,addDoc,serverTimestamp}=fs;
     addDoc(collection(db,'messages'),{name: name.trim(), text, ts:serverTimestamp()}).catch(()=>{});
   });
 }
+
 // ===== 管理者モード =====
 let pressTimer=null;
 const titleEl=document.getElementById('headerTitle');
@@ -843,14 +713,16 @@ function openAdminPanel(){
   document.getElementById('adminPanel').style.display='block';
   waitForFirebase((db,fs)=>{
     const {collection,onSnapshot,query,orderBy}=fs;
-    const q=query(collection(db,'rsvp'),orderBy('ts','asc'));
-    onSnapshot(q,snap=>{
-      // ▼ d.id（ドキュメントID）も一緒に取得するように変更
+    
+    // --- ① 参加者リスト ---
+    const qRsvp=query(collection(db,'rsvp'),orderBy('ts','asc'));
+    onSnapshot(qRsvp,snap=>{
       const docs=snap.docs.map(d=>({ id: d.id, ...d.data() }));
       const goList=docs.filter(r=>r.status==='go');
       const maybeList=docs.filter(r=>r.status==='maybe');
       document.getElementById('adminCount').textContent=goList.length+maybeList.length;
       const list=document.getElementById('adminList');
+      if(!list) return;
       list.innerHTML='';
       
       if(goList.length>0){
@@ -861,7 +733,6 @@ function openAdminPanel(){
         goList.forEach((r,i)=>{
           const item=document.createElement('div'); item.className='admin-list-item';
           const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
-          // ▼ ゴミ箱ボタンを追加
           item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>
           <button onclick="deleteRSVP('${r.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>`;
           list.appendChild(item);
@@ -875,7 +746,6 @@ function openAdminPanel(){
         maybeList.forEach((r,i)=>{
           const item=document.createElement('div'); item.className='admin-list-item';
           const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
-          // ▼ ゴミ箱ボタンを追加
           item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>
           <button onclick="deleteRSVP('${r.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>`;
           list.appendChild(item);
@@ -883,20 +753,54 @@ function openAdminPanel(){
       }
       if(docs.length===0) list.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだ参加表明がありません</div>';
     });
+
+    // --- ② 掲示板メッセージリスト ---
+    const qMsg=query(collection(db,'messages'),orderBy('ts','desc'));
+    onSnapshot(qMsg,snap=>{
+      const msgList=document.getElementById('adminMessagesList');
+      if(!msgList) return;
+      msgList.innerHTML='';
+      if(snap.empty) {
+        msgList.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだメッセージはありません</div>';
+        return;
+      }
+      snap.docs.forEach((d, i)=>{
+        const m = d.data();
+        const item=document.createElement('div'); item.className='admin-list-item';
+        const time=m.ts?new Date(m.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
+        const safeText = (m.text||'').replace(/</g,'&lt;');
+        item.innerHTML=`
+          <div class="admin-num">${i+1}</div>
+          <div class="admin-name" style="line-height:1.4;">
+            <span style="font-size:0.7rem;color:#c070a0;">🌸 ${m.name}</span><br>
+            <span style="font-size:0.85rem;">${safeText}</span>
+          </div>
+          <div class="admin-time">${time}</div>
+          <button onclick="deleteMessage('${d.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>
+        `;
+        msgList.appendChild(item);
+      });
+    });
   });
 }
 
-// ▼ 新しく追加する削除実行の関数 ▼
 function deleteRSVP(docId) {
-  if(!confirm('この参加表明を削除しますか？\n（本人の画面では参加済みのままになります）')) return;
+  if(!confirm('この参加表明を削除しますか？')) return;
   waitForFirebase((db, fs) => {
     const { doc, deleteDoc } = fs;
     deleteDoc(doc(db, 'rsvp', docId)).catch(err => alert('削除に失敗しました'));
   });
 }
 
-function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
+function deleteMessage(docId) {
+  if(!confirm('このメッセージを削除しますか？')) return;
+  waitForFirebase((db, fs) => {
+    const { doc, deleteDoc } = fs;
+    deleteDoc(doc(db, 'messages', docId)).catch(err => alert('削除に失敗しました'));
+  });
+}
 
+function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
 
 // ===== Live Photo アップロード（幹事用） =====
 document.getElementById('livePhotoInput').addEventListener('change', async(e)=>{
