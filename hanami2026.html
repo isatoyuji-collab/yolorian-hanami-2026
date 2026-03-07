@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ヨロリアン桜集合！2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<style>
+  :root {
+    --sakura:#ffb7c5; --sakura-deep:#f0729a;
+    --yolo:#00a0e9; --text:#2d1a2e;
+    --glass:rgba(255,255,255,0.55); --glass-border:rgba(255,255,255,0.8);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Zen Maru Gothic',sans-serif;background:#fde8ef;color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+  .petal-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .petal{position:absolute;top:-40px;font-size:1.4rem;animation:fall linear infinite;opacity:0.7;}
+  @keyframes fall{
+    0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:0.8;}
+    50%{transform:translateY(50vh) rotate(180deg) translateX(30px);}
+    100%{transform:translateY(110vh) rotate(360deg) translateX(-20px);opacity:0.2;}
+  }
+  .bg-mesh{
+    position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(ellipse at 20% 20%,#ffd6e0 0%,transparent 50%),
+      radial-gradient(ellipse at 80% 10%,#ffc8d8 0%,transparent 40%),
+      radial-gradient(ellipse at 60% 80%,#ffe0ec 0%,transparent 50%),
+      radial-gradient(ellipse at 10% 90%,#ffd0e8 0%,transparent 40%),
+      #fde8ef;
+  }
+
+  /* HEADER */
+  .sticky-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,183,197,0.4);box-shadow:0 2px 16px rgba(240,114,154,0.08);}
+  .header-top{max-width:420px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 18px 8px;}
+  .header-title{font-family:'Dela Gothic One',sans-serif;font-size:1.15rem;color:var(--sakura-deep);letter-spacing:0.04em;text-shadow:0 1px 0 rgba(255,255,255,0.9),0 2px 8px rgba(240,114,154,0.2);-webkit-font-smoothing:antialiased;}
+  .live-badge{background:linear-gradient(135deg,#ff4b6e,#ff7eb3);color:white;font-size:0.62rem;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:0.08em;animation:pulse-badge 2s ease-in-out infinite;box-shadow:0 2px 10px rgba(255,75,110,0.4);}
+  @keyframes pulse-badge{0%,100%{transform:scale(1);box-shadow:0 2px 10px rgba(255,75,110,0.4);}50%{transform:scale(1.06);box-shadow:0 4px 18px rgba(255,75,110,0.6);}}
+  .header-contacts{max-width:420px;margin:0 auto;display:flex;gap:8px;padding:0 18px 12px;}
+  .hc-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:14px;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.15s cubic-bezier(0.34,1.56,0.64,1);border:none;cursor:pointer;}
+  .hc-btn:active{transform:scale(0.93);}
+  .hc-btn.line{background:linear-gradient(135deg,#07e060,#06c755);color:white;box-shadow:0 3px 12px rgba(6,199,85,0.3);}
+  .hc-btn.tel{background:linear-gradient(135deg,#ff6b6b,#ee5a24);color:white;box-shadow:0 3px 12px rgba(238,90,36,0.25);}
+  .hc-btn i{font-size:1rem;}
+
+  main{position:relative;z-index:1;max-width:420px;margin:0 auto;padding:0 16px 100px;}
+
+  .hero{text-align:center;padding:28px 0 18px;}
+  .hero-emoji{font-size:3.2rem;display:block;animation:bounce-in 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+  @keyframes bounce-in{0%{transform:scale(0) rotate(-15deg);opacity:0;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+  .hero-title{font-family:'Dela Gothic One',sans-serif;font-size:1.75rem;line-height:1.2;color:var(--sakura-deep);margin:10px 0 6px;}
+  .hero-sub{font-size:0.78rem;color:#a06080;line-height:1.6;}
+
+  .glass-card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1.5px solid var(--glass-border);border-radius:28px;padding:20px;margin-bottom:16px;box-shadow:0 4px 24px rgba(240,114,154,0.08);}
+  .section-label{font-size:0.62rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#c070a0;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+  .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(192,112,160,0.3),transparent);}
+
+  /* ===== SAKURA TREE ===== */
+  .tree-wrap{text-align:center;position:relative;padding:10px 0 6px;}
+  .tree-svg-area{display:inline-block;position:relative;}
+  .tree-svg-area svg{display:block;}
+  .tree-counter{margin-top:10px;font-size:0.75rem;color:#a06080;}
+  .tree-counter strong{font-family:'Dela Gothic One',sans-serif;font-size:1.1rem;color:var(--sakura-deep);}
+  .bloom-particle{
+    position:absolute;font-size:1.1rem;pointer-events:none;
+    animation:bloom-fly 1s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  @keyframes bloom-fly{
+    0%{transform:translate(0,0) scale(0);opacity:1;}
+    60%{opacity:1;}
+    100%{transform:translate(var(--tx),var(--ty)) scale(1.2);opacity:0;}
+  }
+
+  /* ===== WEATHER ===== */
+  .weather-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .weather-single{background:rgba(255,255,255,0.65);border-radius:20px;padding:16px;border:1px solid rgba(0,160,233,0.2);text-align:center;}
+  .weather-box{background:rgba(255,255,255,0.65);border-radius:20px;padding:14px;border:1px solid rgba(255,183,197,0.25);text-align:center;}
+  .weather-box.today{border-color:rgba(0,160,233,0.25);}
+  .weather-label{font-size:0.62rem;font-weight:700;color:#c070a0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
+  .weather-label.blue{color:var(--yolo);}
+  .weather-icon{font-size:2.2rem;display:block;margin:4px 0;}
+  .weather-icon-lg{font-size:3rem;display:block;margin:6px 0;}
+  .weather-temp{font-family:'Dela Gothic One',sans-serif;font-size:1.6rem;color:var(--text);line-height:1;}
+  .weather-temp-lg{font-family:'Dela Gothic One',sans-serif;font-size:2.2rem;color:var(--text);line-height:1;}
+  .weather-temp span,.weather-temp-lg span{font-size:0.9rem;font-family:'Zen Maru Gothic',sans-serif;font-weight:500;}
+  .weather-desc{font-size:0.72rem;color:#a08090;margin-top:4px;}
+  .weather-range{font-size:0.7rem;color:#a08090;margin-top:3px;}
+  .weather-note{margin-top:10px;font-size:0.7rem;color:#a06080;background:rgba(255,183,197,0.15);border-radius:12px;padding:8px 12px;text-align:center;line-height:1.5;}
+
+  /* INFO */
+  .info-grid{display:grid;gap:10px;}
+  .info-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:rgba(255,255,255,0.6);border-radius:16px;border:1px solid rgba(255,183,197,0.3);}
+  .info-icon{font-size:1.2rem;min-width:28px;text-align:center;margin-top:1px;}
+  .info-text strong{display:block;font-size:0.75rem;font-weight:700;color:#c070a0;margin-bottom:1px;}
+  .info-text span{font-size:0.88rem;color:var(--text);font-weight:500;}
+
+  /* RSVP */
+  .rsvp-counter{text-align:center;margin-bottom:14px;}
+  .rsvp-count{font-family:'Dela Gothic One',sans-serif;font-size:2.8rem;color:var(--sakura-deep);line-height:1;}
+  .rsvp-count-label{font-size:0.75rem;color:#a06080;margin-top:2px;}
+  .rsvp-progress{background:rgba(255,183,197,0.25);border-radius:999px;height:8px;margin:12px 0;overflow:hidden;}
+  .rsvp-bar{height:100%;border-radius:999px;background:linear-gradient(to right,#ffb7c5,#f0729a);width:0%;transition:width 1s cubic-bezier(0.34,1.56,0.64,1);}
+  .btn-rsvp{width:100%;padding:15px;border-radius:20px;border:none;font-family:'Dela Gothic One',sans-serif;font-size:1rem;cursor:pointer;transition:all 0.18s cubic-bezier(0.34,1.56,0.64,1);letter-spacing:0.03em;}
+  .btn-rsvp.go{background:linear-gradient(135deg,#ff7eb3,#f0729a);color:white;box-shadow:0 6px 20px rgba(240,114,154,0.35);}
+  .btn-rsvp.go:active{transform:scale(0.95);}
+  .btn-rsvp.go:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(240,114,154,0.45);}
+  .btn-rsvp.maybe{background:rgba(255,255,255,0.7);color:#c070a0;border:1.5px solid rgba(255,183,197,0.5);margin-top:10px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.88rem;}
+  .btn-rsvp.watch{background:rgba(255,255,255,0.7);color:#8070a0;border:1.5px solid rgba(180,160,220,0.5);font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.88rem;}
+  .rsvp-status-box{background:rgba(255,255,255,0.7);border-radius:20px;padding:16px;text-align:center;border:1.5px solid rgba(255,183,197,0.3);margin-bottom:10px;}
+  .rsvp-status-emoji{font-size:2rem;display:block;margin-bottom:6px;}
+  .rsvp-status-text{font-family:'Dela Gothic One',sans-serif;font-size:1rem;color:var(--sakura-deep);}
+  .rsvp-status-sub{font-size:0.72rem;color:#a06080;margin-top:4px;}
+  .btn-rsvp-change{width:100%;padding:12px;border-radius:16px;border:none;background:linear-gradient(135deg,#ff7eb3,#f0729a);color:white;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;box-shadow:0 4px 14px rgba(240,114,154,0.3);transition:all 0.15s;}
+  .btn-rsvp-change:active{transform:scale(0.95);}
+  /* admin badge */
+  .admin-status-go{color:#2ecc71;font-weight:700;}
+  .admin-status-maybe{color:#f0729a;font-weight:700;}
+  /* MAP + PHOTO */
+  .map-photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .map-photo-item{display:flex;flex-direction:column;gap:8px;}
+  .map-photo-label{font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#c070a0;display:flex;align-items:center;gap:5px;}
+  .map-thumb{width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#d8eef8,#c0e0f5);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#5090c0;border:1.5px solid rgba(0,160,233,0.18);}
+  .map-thumb .map-pin{font-size:1.8rem;animation:pin-bounce 1.5s ease-in-out infinite;}
+  @keyframes pin-bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+  .map-thumb .map-name{font-size:0.68rem;font-weight:700;}
+  .btn-map-small{display:flex;align-items:center;justify-content:center;gap:5px;background:linear-gradient(135deg,#00a0e9,#0077cc);color:white;border-radius:12px;padding:9px 6px;text-decoration:none;font-size:0.72rem;font-weight:700;box-shadow:0 3px 12px rgba(0,160,233,0.28);transition:all 0.15s;}
+  .btn-map-small:active{transform:scale(0.94);}
+  .photo-thumb{width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#ffd6e0,#ffe8f0);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#c080a0;border:1.5px solid rgba(255,183,197,0.3);position:relative;}
+  .photo-thumb .ph-icon{font-size:1.8rem;opacity:0.5;}
+  .photo-thumb .ph-text{font-size:0.62rem;font-weight:700;opacity:0.7;text-align:center;padding:0 8px;}
+  .live-dot-badge{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.4);color:white;font-size:0.58rem;font-weight:700;padding:3px 8px;border-radius:999px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px);}
+  .photo-dot{width:5px;height:5px;background:#ff4b4b;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+  .photo-caption{font-size:0.62rem;color:#a06080;text-align:center;line-height:1.4;}
+
+  /* OMIKUJI */
+  .omikuji-result{min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,0.6);border-radius:20px;padding:16px;margin-bottom:14px;border:1px solid rgba(255,183,197,0.3);}
+  .omikuji-rank{font-family:'Dela Gothic One',sans-serif;font-size:1.6rem;color:var(--sakura-deep);margin-bottom:4px;}
+  .omikuji-msg{font-size:0.82rem;color:#a06080;line-height:1.5;text-align:center;}
+  .omikuji-placeholder{font-size:0.82rem;color:#d090b0;}
+  .btn-omikuji{width:100%;padding:14px;border-radius:18px;border:none;background:linear-gradient(135deg,#ffd93d,#ffb347);color:#7a4500;font-family:'Dela Gothic One',sans-serif;font-size:0.95rem;cursor:pointer;box-shadow:0 4px 16px rgba(255,179,71,0.35);transition:all 0.18s cubic-bezier(0.34,1.56,0.64,1);}
+  .btn-omikuji:hover{transform:translateY(-2px);}
+  .btn-omikuji:active{transform:scale(0.95);}
+
+  /* BOARD */
+  .message-input-wrap{display:flex;gap:8px;margin-bottom:14px;}
+  .message-input{flex:1;background:rgba(255,255,255,0.7);border:1.5px solid rgba(255,183,197,0.4);border-radius:14px;padding:11px 14px;font-family:'Zen Maru Gothic',sans-serif;font-size:0.85rem;color:var(--text);outline:none;}
+  .message-input::placeholder{color:#d090b0;}
+  .message-input:focus{border-color:var(--sakura-deep);background:rgba(255,255,255,0.9);}
+  .btn-post{background:linear-gradient(135deg,#ff7eb3,#f0729a);color:white;border:none;border-radius:14px;width:46px;font-size:1.1rem;cursor:pointer;transition:all 0.15s;}
+  .btn-post:active{transform:scale(0.9);}
+  .messages-list{display:grid;gap:10px;}
+  .message-bubble{background:rgba(255,255,255,0.65);border-radius:18px;padding:12px 16px;border:1px solid rgba(255,183,197,0.25);animation:pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+  @keyframes pop-in{0%{transform:scale(0.85) translateY(8px);opacity:0;}100%{transform:scale(1) translateY(0);opacity:1;}}
+  .msg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+  .msg-name{font-size:0.72rem;font-weight:700;color:#c070a0;}
+  .msg-time{font-size:0.65rem;color:#c0a0b0;}
+  .msg-text{font-size:0.85rem;line-height:1.5;}
+  .footer-spacer{height:60px;}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(45,26,46,0.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade-in 0.2s ease;}
+  @keyframes fade-in{0%{opacity:0;}100%{opacity:1;}}
+  .modal-box{background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-radius:28px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(240,114,154,0.2);animation:modal-pop 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+  @keyframes modal-pop{0%{transform:scale(0.85) translateY(20px);opacity:0;}100%{transform:scale(1) translateY(0);opacity:1;}}
+  .modal-emoji{font-size:2.5rem;text-align:center;display:block;margin-bottom:10px;}
+  .modal-title{font-family:'Dela Gothic One',sans-serif;font-size:1.2rem;color:var(--sakura-deep);text-align:center;margin-bottom:6px;}
+  .modal-sub{font-size:0.75rem;color:#a06080;text-align:center;margin-bottom:20px;line-height:1.5;}
+  .modal-input{width:100%;background:rgba(255,240,244,0.8);border:1.5px solid rgba(255,183,197,0.5);border-radius:14px;padding:13px 16px;font-family:'Zen Maru Gothic',sans-serif;font-size:0.95rem;color:var(--text);outline:none;margin-bottom:12px;}
+  .modal-input:focus{border-color:var(--sakura-deep);}
+  .modal-btn{width:100%;padding:14px;border-radius:18px;border:none;font-family:'Dela Gothic One',sans-serif;font-size:1rem;cursor:pointer;transition:all 0.18s cubic-bezier(0.34,1.56,0.64,1);}
+  .modal-btn.primary{background:linear-gradient(135deg,#ff7eb3,#f0729a);color:white;box-shadow:0 5px 18px rgba(240,114,154,0.35);margin-bottom:10px;}
+  .modal-btn.primary:active{transform:scale(0.95);}
+  .modal-btn.secondary{background:rgba(255,255,255,0.7);color:#c070a0;border:1.5px solid rgba(255,183,197,0.4);font-family:'Zen Maru Gothic',sans-serif;font-size:0.88rem;font-weight:700;}
+  .modal-error{font-size:0.75rem;color:#e05070;text-align:center;margin-top:-6px;margin-bottom:10px;display:none;}
+
+  /* ADMIN PANEL */
+  .admin-panel{position:fixed;inset:0;z-index:300;background:#fff5f7;overflow-y:auto;display:none;}
+  .admin-header{background:linear-gradient(135deg,#2d1a2e,#4a2040);color:white;padding:20px 20px 16px;position:sticky;top:0;}
+  .admin-header-row{max-width:420px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+  .admin-title{font-family:'Dela Gothic One',sans-serif;font-size:1.1rem;}
+  .admin-close{background:rgba(255,255,255,0.15);border:none;color:white;border-radius:10px;padding:6px 14px;font-family:'Zen Maru Gothic',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;}
+  .admin-body{max-width:420px;margin:0 auto;padding:20px 16px;}
+  .admin-count{font-family:'Dela Gothic One',sans-serif;font-size:2.5rem;color:var(--sakura-deep);text-align:center;line-height:1;}
+  .admin-count-label{font-size:0.75rem;color:#a06080;text-align:center;margin-bottom:20px;}
+  .admin-list{display:grid;gap:10px;}
+  .admin-list-item{background:white;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(240,114,154,0.08);border:1px solid rgba(255,183,197,0.2);}
+  .admin-num{font-family:'Dela Gothic One',sans-serif;font-size:1.1rem;color:rgba(192,112,160,0.4);min-width:28px;}
+  .admin-name{font-size:0.95rem;font-weight:700;flex:1;}
+  .admin-time{font-size:0.65rem;color:#c0a0b0;}
+</style>
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyABVzb-96iPwmhAiMxFW7xj98pt54lzhF0",
+  authDomain: "yolorian-hanami-2026.firebaseapp.com",
+  projectId: "yolorian-hanami-2026",
+  storageBucket: "yolorian-hanami-2026.firebasestorage.app",
+  messagingSenderId: "944100869922",
+  appId: "1:944100869922:web:ac0297244460fde087477b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Firebaseをグローバルに公開
+window._db = db;
+window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp };
+</script>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<div class="petal-bg" id="petalContainer"></div>
+
+<!-- HEADER -->
+<header class="sticky-header">
+  <div class="header-top">
+    <div class="header-title" id="headerTitle" style="user-select:none;-webkit-user-select:none;">🌸 ヨロリアン桜集合！</div>
+    <div class="live-badge">● LIVE 開催中</div>
+  </div>
+  <div class="header-contacts">
+    <a href="https://line.me/ti/p/【幹事ID】" class="hc-btn line"><i class="bi bi-line"></i> LINEで連絡</a>
+    <a href="tel:00000000000" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="hero-emoji">🌸</span>
+    <h1 class="hero-title">去る人も残る人も<br>みんなで春を！</h1>
+    <p class="hero-sub">2026年4月4日（土）14:00〜21:00<br>大阪城公園 / BYOB・飲めない人も大歓迎</p>
+  </div>
+
+  <!-- SAKURA TREE -->
+  <div class="glass-card">
+    <div class="section-label"><i class="bi bi-tree-fill"></i> Our Sakura Tree / みんなで育てる桜</div>
+    <div class="tree-wrap">
+      <div class="tree-svg-area" id="treeSvgArea">
+        <svg id="treeSvg" width="280" height="220" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- 幹 -->
+          <path d="M130 210 Q128 170 125 150 Q122 130 130 110" stroke="#a0724a" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M150 210 Q152 170 155 150 Q158 130 150 110" stroke="#a0724a" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M130 210 L150 210" stroke="#a0724a" stroke-width="10" fill="none"/>
+          <!-- 枝 -->
+          <path d="M138 150 Q110 140 85 120" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M140 140 Q115 110 100 85" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M142 130 Q145 95 140 70" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M144 140 Q170 110 185 85" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M142 150 Q168 138 195 122" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <!-- 芝生 -->
+          <ellipse cx="140" cy="212" rx="90" ry="8" fill="#c8e6a0" opacity="0.6"/>
+          <!-- 花グループ（JSで追加） -->
+          <g id="bloomGroup"></g>
+        </svg>
+      </div>
+      <div class="tree-counter">
+        ヨロリアンの数だけ花が咲く🌸
+      </div>
+    </div>
+  </div>
+
+  <!-- WEATHER -->
+  <div class="glass-card" id="weatherCard">
+    <div class="section-label"><i class="bi bi-cloud-sun-fill"></i> Weather / 天気予報</div>
+    <div id="weatherContent"><!-- JSで描画 --></div>
+    <div class="weather-note" id="weatherNote"></div>
+  </div>
+
+  <!-- EVENT INFO -->
+  <div class="glass-card">
+    <div class="section-label"><i class="bi bi-calendar3"></i> Event Info</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="info-icon">📅</div><div class="info-text"><strong>日時</strong><span>4月4日（土）14:00〜21:00</span></div></div>
+      <div class="info-item"><div class="info-icon">📍</div><div class="info-text"><strong>場所</strong><span>大阪城公園（集合場所はLive Photoで確認！）</span></div></div>
+      <div class="info-item"><div class="info-icon">🥤</div><div class="info-text"><strong>スタイル</strong><span>BYOB — 好きな飲み物を持参してね</span></div></div>
+      <div class="info-item"><div class="info-icon">❄️</div><div class="info-text"><strong>注意</strong><span>寒ければ早期終了あり</span></div></div>
+    </div>
+  </div>
+
+
+  <!-- RSVP -->
+  <div class="glass-card">
+    <div class="section-label"><i class="bi bi-people-fill"></i> RSVP / 参加表明</div>
+    <!-- ボタン群 -->
+    <div id="rsvpButtons">
+      <button class="btn-rsvp go" onclick="doRSVP('go')">🙋 行くよ！</button>
+      <button class="btn-rsvp maybe" onclick="doRSVP('maybe')" style="margin-top:10px">🤔 たぶん行く…</button>
+      <button class="btn-rsvp watch" onclick="doRSVP('watch')" style="margin-top:10px">👀 当日決める！</button>
+    </div>
+    <!-- 選択後ステータス -->
+    <div id="rsvpStatus" style="display:none">
+      <div class="rsvp-status-box" id="rsvpStatusBox"></div>
+      <button class="btn-rsvp-change" id="rsvpChangeBtn" style="display:none" onclick="upgradeToGo()">🙋 やっぱり「行くよ！」に変更する</button>
+    </div>
+  </div>
+  <!-- MAP + LIVE PHOTO -->
+  <div class="glass-card">
+    <div class="section-label"><i class="bi bi-geo-alt-fill"></i> Location / 場所 &amp; 現在地</div>
+    <div class="map-photo-grid">
+      <div class="map-photo-item">
+        <div class="map-photo-label"><i class="bi bi-map"></i> 地図</div>
+        <div class="map-thumb"><div class="map-pin">📍</div><div class="map-name">大阪城公園</div></div>
+        <a href="https://maps.apple.com/?q=大阪城公園" class="btn-map-small"><i class="bi bi-map"></i> Mapsで開く</a>
+      </div>
+      <div class="map-photo-item">
+        <div class="map-photo-label"><i class="bi bi-camera-fill"></i> 現在地</div>
+        <div class="photo-thumb" id="livePhotoThumb">
+          <div class="ph-icon">📸</div>
+          <div class="ph-text">当日リアルタイム更新！</div>
+          <div class="live-dot-badge"><div class="photo-dot"></div> LIVE</div>
+        </div>
+        <div class="photo-caption">この写真の場所へ来てね📌</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OMIKUJI -->
+  <div class="glass-card">
+    <div class="section-label"><i class="bi bi-stars"></i> Omikuji / お花見おみくじ</div>
+    <div class="omikuji-result" id="omikujiResult">
+      <div class="omikuji-placeholder">🎋 ボタンを押してみてね！</div>
+    </div>
+    <button class="btn-omikuji" onclick="drawOmikuji()">🎋 おみくじを引く</button>
+  </div>
+
+  <!-- MESSAGE BOARD -->
+  <div class="glass-card">
+    <div class="section-label"><i class="bi bi-chat-heart-fill"></i> Message Board / 一言どうぞ！</div>
+    <div class="message-input-wrap">
+      <input class="message-input" type="text" id="msgInput" placeholder="一言メッセージを入力…" maxlength="50">
+      <button class="btn-post" onclick="postMessage()">🌸</button>
+    </div>
+    <div class="messages-list" id="messagesList">
+      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">13:42</span></div><div class="msg-text">お疲れ様でした！絶対行きます！！</div></div>
+      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">13:55</span></div><div class="msg-text">レジャーシート持っていくね〜</div></div>
+      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">14:01</span></div><div class="msg-text">みんなと最後にお花見できて嬉しい🌸</div></div>
+    </div>
+  </div>
+
+  <!-- 名前入力モーダル（RSVP時） -->
+  <div class="modal-overlay" id="nameModal" style="display:none">
+    <div class="modal-box">
+      <span class="modal-emoji">🙋</span>
+      <div class="modal-title">参加表明ありがとう！</div>
+      <div class="modal-sub">あなたのお名前を教えてください<br>幹事だけが確認できます🔒</div>
+      <input class="modal-input" type="text" id="modalNameInput" placeholder="例：田中さん" maxlength="20">
+      <button class="modal-btn primary" onclick="submitRSVPName()">🌸 決定して参加表明！</button>
+      <button class="modal-btn secondary" onclick="closeNameModal()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- 管理者パスワードモーダル -->
+  <div class="modal-overlay" id="adminModal" style="display:none">
+    <div class="modal-box">
+      <span class="modal-emoji">🔑</span>
+      <div class="modal-title">幹事モード</div>
+      <div class="modal-sub">パスワードを入力してください</div>
+      <input class="modal-input" type="password" id="adminPwInput" placeholder="パスワード">
+      <div class="modal-error" id="adminError">パスワードが違います</div>
+      <button class="modal-btn primary" onclick="checkAdminPw()">ログイン</button>
+      <button class="modal-btn secondary" onclick="closeAdminModal()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- 管理者パネル -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+      <div class="admin-header-row">
+        <div class="admin-title">🔑 幹事モード — 参加者リスト</div>
+        <button class="admin-close" onclick="closeAdminPanel()">閉じる</button>
+      </div>
+    </div>
+    <div class="admin-body">
+      <div class="admin-count" id="adminCount">0</div>
+      <div class="admin-count-label">人が参加表明しています</div>
+
+      <!-- Live Photo アップロード -->
+      <div style="background:white;border-radius:20px;padding:16px;margin-bottom:20px;border:1px solid rgba(255,183,197,0.3);">
+        <div style="font-size:0.72rem;font-weight:700;color:#c070a0;margin-bottom:10px;">📸 Live Photo を更新</div>
+        <input type="file" id="livePhotoInput" accept="image/*" capture="environment" style="display:none">
+        <button onclick="document.getElementById('livePhotoInput').click()" style="width:100%;padding:12px;border-radius:14px;border:2px dashed rgba(255,183,197,0.6);background:rgba(255,240,244,0.5);color:#c070a0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">
+          📷 写真を選択してアップロード
+        </button>
+        <div id="uploadStatus" style="font-size:0.72rem;color:#a06080;text-align:center;margin-top:8px;display:none;"></div>
+      </div>
+
+      <div class="admin-list" id="adminList"></div>
+    </div>
+  </div>
+
+  <div class="footer-spacer"></div>
+</main>
+
+<script>
+// ===== 設定 =====
+const CLOUDINARY_CLOUD = 'dohyqxvje';
+const CLOUDINARY_PRESET = 'hanami_live';
+const CLOUDINARY_PUBLIC_ID = 'hanami/latest';
+
+// ===== 花びら背景 =====
+const emojis=['🌸','🌺','🌷','✿','❀'];
+const cont=document.getElementById('petalContainer');
+for(let i=0;i<18;i++){
+  const p=document.createElement('div'); p.className='petal';
+  p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  p.style.left=Math.random()*100+'%';
+  p.style.animationDuration=(5+Math.random()*8)+'s';
+  p.style.animationDelay=(-Math.random()*10)+'s';
+  p.style.fontSize=(1+Math.random()*0.8)+'rem';
+  p.style.opacity=0.4+Math.random()*0.4;
+  cont.appendChild(p);
+}
+
+// ===== 桜の木 =====
+const branchTips=[
+  {x:85,y:120},{x:100,y:85},{x:140,y:70},{x:185,y:85},{x:195,y:122},
+  {x:70,y:108},{x:92,y:72},{x:140,y:55},{x:192,y:70},{x:210,y:110},
+  {x:60,y:130},{x:108,y:60},{x:140,y:42},{x:172,y:60},{x:220,y:128},
+  {x:50,y:145},{x:78,y:50},{x:140,y:30},{x:202,y:50},{x:230,y:143},
+  {x:42,y:158},{x:65,y:38},{x:215,y:38},{x:238,y:156},{x:140,y:18},
+  {x:112,y:40},{x:168,y:40},{x:95,y:100},{x:185,y:100},{x:140,y:85},
+];
+let bloomCount=4;
+const bloomGroup=document.getElementById('bloomGroup');
+
+function renderBlooms(count){
+  bloomGroup.innerHTML='';
+  const colors=['#ffb7c5','#ff90aa','#ffd6e0','#ff7eb3','#ffccd5'];
+  for(let i=0;i<Math.min(count,branchTips.length);i++){
+    const tip=branchTips[i];
+    const c=colors[i%colors.length];
+    for(let p=0;p<5;p++){
+      const angle=(p/5)*Math.PI*2;
+      const px=tip.x+Math.cos(angle)*7;
+      const py=tip.y+Math.sin(angle)*7;
+      const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx',px); circle.setAttribute('cy',py);
+      circle.setAttribute('r','6'); circle.setAttribute('fill',c);
+      circle.setAttribute('opacity','0.9');
+      bloomGroup.appendChild(circle);
+    }
+    const center=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    center.setAttribute('cx',tip.x); center.setAttribute('cy',tip.y);
+    center.setAttribute('r','3.5'); center.setAttribute('fill','#fff0b0');
+    bloomGroup.appendChild(center);
+  }
+}
+
+function addBloom(){
+  if(bloomCount>=branchTips.length) return;
+  bloomCount++;
+  renderBlooms(bloomCount);
+  const area=document.getElementById('treeSvgArea');
+  const rect=area.getBoundingClientRect();
+  for(let i=0;i<4;i++){
+    const el=document.createElement('div');
+    el.className='bloom-particle'; el.textContent='🌸';
+    const tx=(Math.random()-0.5)*80+'px';
+    const ty=-(30+Math.random()*60)+'px';
+    el.style.setProperty('--tx',tx); el.style.setProperty('--ty',ty);
+    el.style.left=(rect.width/2+(Math.random()-0.5)*60)+'px';
+    el.style.top=(rect.height/2)+'px';
+    area.style.position='relative';
+    area.appendChild(el);
+    setTimeout(()=>el.remove(),1000);
+  }
+}
+renderBlooms(bloomCount);
+
+// ===== 天気 =====
+const isEventDay = new Date().getFullYear()===2026 && new Date().getMonth()===3 && new Date().getDate()===4;
+const weatherContent=document.getElementById('weatherContent');
+const weatherNote=document.getElementById('weatherNote');
+const todayMock={icon:'⛅',temp:'14',desc:'くもり時々晴れ',range:'↑17° ↓9°'};
+const eventMock={icon:'🌸',temp:'18',desc:'晴れ！お花見日和',range:'↑21° ↓12°'};
+if(isEventDay){
+  weatherContent.innerHTML=`<div class="weather-single" style="padding:20px"><div class="weather-label blue" style="font-size:0.75rem;margin-bottom:8px">🌸 今日はお花見当日！</div><span class="weather-icon-lg">${eventMock.icon}</span><div class="weather-temp-lg">${eventMock.temp}<span>°C</span></div><div class="weather-desc" style="font-size:0.85rem;margin-top:6px">${eventMock.desc}</div><div class="weather-range" style="font-size:0.78rem;margin-top:4px">${eventMock.range}</div></div>`;
+  weatherNote.textContent='📍 大阪の天気（模擬データ）';
+} else {
+  weatherContent.innerHTML=`<div class="weather-grid"><div class="weather-box today"><div class="weather-label blue">TODAY 今日</div><span class="weather-icon">${todayMock.icon}</span><div class="weather-temp">${todayMock.temp}<span>°C</span></div><div class="weather-desc">${todayMock.desc}</div><div class="weather-range">${todayMock.range}</div></div><div class="weather-box"><div class="weather-label">4/4 当日予報</div><span class="weather-icon">${eventMock.icon}</span><div class="weather-temp">${eventMock.temp}<span>°C</span></div><div class="weather-desc">${eventMock.desc}</div><div class="weather-range">${eventMock.range}</div></div></div>`;
+  weatherNote.textContent='📍 大阪の予報（模擬データ）当日は暖かめ🌸 羽織もの持参がおすすめ';
+}
+
+// ===== おみくじ =====
+const omikujiList=[
+  {rank:'大吉🎊',msg:'今年最高のお花見になる予感！<br>飲み物は奮発しよう'},
+  {rank:'吉🌸',  msg:'桜の下で素敵な出会いあり✨<br>積極的に話しかけよう'},
+  {rank:'中吉🌷',msg:'楽しい時間は自分で作るもの！<br>笑顔でいればOK'},
+  {rank:'小吉🌼',msg:'のんびり過ごすのが吉◎<br>焦らずマイペースで'},
+  {rank:'末吉🍃',msg:'今日は聞き役に回ると<br>後で良いことある'},
+  {rank:'凶🌧',  msg:'ちょっと寒いかも…<br>羽織ものを忘れずに！'},
+  {rank:'大凶😱',msg:'レジャーシートを忘れた！<br>…でも芝生があるからOK笑'},
+];
+let lastOmikuji=-1;
+function drawOmikuji(){
+  let idx; do{idx=Math.floor(Math.random()*omikujiList.length);}while(idx===lastOmikuji);
+  lastOmikuji=idx;
+  const o=omikujiList[idx];
+  const el=document.getElementById('omikujiResult');
+  el.style.animation='none'; el.offsetHeight;
+  el.innerHTML=`<div class="omikuji-rank">${o.rank}</div><div class="omikuji-msg">${o.msg}</div>`;
+  el.style.animation='pop-in 0.35s cubic-bezier(0.34,1.56,0.64,1)';
+}
+
+// ===== LocalStorage keys =====
+const NAME_KEY='hanami2026_name';
+const RSVP_STATUS_KEY='hanami2026_status';
+const ADMIN_PW='hanami2026';
+
+// ===== Firebase初期化待ち =====
+function waitForFirebase(cb){
+  if(window._db) cb(window._db, window._fsLib);
+  else setTimeout(()=>waitForFirebase(cb), 100);
+}
+
+// ===== Live Photo =====
+function loadLivePhoto(){
+  const ts = Date.now();
+  const url = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/q_auto,f_auto,w_300/${CLOUDINARY_PUBLIC_ID}.jpg?t=${ts}`;
+  const thumb = document.getElementById('livePhotoThumb');
+  const img = new Image();
+  img.onload = () => {
+    thumb.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:18px;"><div class="live-dot-badge"><div class="photo-dot"></div> LIVE</div>`;
+  };
+  img.onerror = () => {}; // 画像なければプレースホルダーのまま
+  img.src = url;
+}
+loadLivePhoto();
+// 3分ごとに自動更新
+setInterval(loadLivePhoto, 3 * 60 * 1000);
+
+// ===== RSVP =====
+let rsvpCount = 0;
+const savedStatus = localStorage.getItem(RSVP_STATUS_KEY);
+if(savedStatus) showRsvpStatus(savedStatus, localStorage.getItem(NAME_KEY));
+
+// Firestoreからブルーム数を反映
+waitForFirebase((db, fs)=>{
+  const {collection, onSnapshot, query} = fs;
+  // RSVP リアルタイム購読
+  onSnapshot(query(collection(db,'rsvp')), snap=>{
+    const count = snap.size;
+    // bloomに反映（ベース4 + Firestore件数）
+    const target = Math.min(4 + count, branchTips.length);
+    if(target > bloomCount){
+      bloomCount = target;
+      renderBlooms(bloomCount);
+    }
+  });
+});
+
+function doRSVP(status){
+  if(localStorage.getItem(RSVP_STATUS_KEY)) return;
+  if(status==='watch'){
+    completeRSVP(null,'watch');
+  } else {
+    const savedName=localStorage.getItem(NAME_KEY);
+    if(savedName){ completeRSVP(savedName,status); }
+    else {
+      document.getElementById('nameModal').dataset.status=status;
+      document.getElementById('nameModal').style.display='flex';
+      setTimeout(()=>document.getElementById('modalNameInput').focus(),100);
+    }
+  }
+}
+
+function submitRSVPName(){
+  const name=document.getElementById('modalNameInput').value.trim();
+  if(!name) return;
+  localStorage.setItem(NAME_KEY,name);
+  const status=document.getElementById('nameModal').dataset.status||'go';
+  closeNameModal();
+  completeRSVP(name,status);
+}
+
+function completeRSVP(name,status){
+  localStorage.setItem(RSVP_STATUS_KEY,status);
+  if(status!=='watch'){
+    waitForFirebase((db,fs)=>{
+      const {collection,addDoc,serverTimestamp}=fs;
+      addDoc(collection(db,'rsvp'),{name,status,ts:serverTimestamp()}).catch(()=>{});
+    });
+    addBloom();
+  }
+  showRsvpStatus(status,name);
+}
+
+function showRsvpStatus(status,name){
+  document.getElementById('rsvpButtons').style.display='none';
+  document.getElementById('rsvpStatus').style.display='block';
+  const box=document.getElementById('rsvpStatusBox');
+  const changeBtn=document.getElementById('rsvpChangeBtn');
+  if(status==='go'){
+    box.innerHTML=`<span class="rsvp-status-emoji">✅</span><div class="rsvp-status-text">参加表明しました！</div><div class="rsvp-status-sub">当日会いましょう🌸</div>`;
+    changeBtn.style.display='none';
+  } else if(status==='maybe'){
+    box.innerHTML=`<span class="rsvp-status-emoji">🤔</span><div class="rsvp-status-text">たぶん行くで登録中</div><div class="rsvp-status-sub">決まったら下のボタンで変更できるよ！</div>`;
+    changeBtn.style.display='block';
+  } else {
+    box.innerHTML=`<span class="rsvp-status-emoji">👀</span><div class="rsvp-status-text">当日決める！で登録中</div><div class="rsvp-status-sub">気が向いたらぜひ来てね🌸</div>`;
+    changeBtn.style.display='block';
+  }
+}
+
+function upgradeToGo(){
+  const savedName=localStorage.getItem(NAME_KEY);
+  if(savedName){
+    waitForFirebase((db,fs)=>{
+      const {collection,addDoc,serverTimestamp}=fs;
+      addDoc(collection(db,'rsvp'),{name:savedName,status:'go',ts:serverTimestamp()}).catch(()=>{});
+    });
+    localStorage.setItem(RSVP_STATUS_KEY,'go');
+    showRsvpStatus('go',savedName);
+    addBloom();
+  } else {
+    document.getElementById('nameModal').dataset.status='go';
+    document.getElementById('nameModal').style.display='flex';
+    setTimeout(()=>document.getElementById('modalNameInput').focus(),100);
+  }
+}
+
+function closeNameModal(){
+  document.getElementById('nameModal').style.display='none';
+  document.getElementById('modalNameInput').value='';
+}
+document.getElementById('modalNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitRSVPName();});
+
+// ===== 掲示板（Firestore） =====
+waitForFirebase((db,fs)=>{
+  const {collection,onSnapshot,query,orderBy,limit,addDoc,serverTimestamp}=fs;
+  // 最新20件をリアルタイム購読
+  const q=query(collection(db,'messages'),orderBy('ts','desc'),limit(20));
+  let first=true;
+  onSnapshot(q,snap=>{
+    if(first){
+      // 初回：全件描画
+      first=false;
+      const list=document.getElementById('messagesList');
+      list.innerHTML='';
+      snap.docs.reverse().forEach(d=>appendMessage(d.data()));
+    } else {
+      // 差分のみ追加
+      snap.docChanges().forEach(change=>{
+        if(change.type==='added') prependMessage(change.doc.data());
+      });
+    }
+  });
+});
+
+function appendMessage(data){
+  const bubble=createBubble(data);
+  document.getElementById('messagesList').appendChild(bubble);
+}
+function prependMessage(data){
+  const bubble=createBubble(data);
+  bubble.style.animation='pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1)';
+  document.getElementById('messagesList').insertBefore(bubble,document.getElementById('messagesList').firstChild);
+}
+function createBubble(data){
+  const bubble=document.createElement('div'); bubble.className='message-bubble';
+  const time = data.ts ? new Date(data.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}) : '--:--';
+  bubble.innerHTML=`<div class="msg-header"><span class="msg-name">🌸 ${data.name||'ヨロリアン'}</span><span class="msg-time">${time}</span></div><div class="msg-text">${(data.text||'').replace(/</g,'&lt;')}</div>`;
+  return bubble;
+}
+
+function postMessage(){
+  const input=document.getElementById('msgInput');
+  const text=input.value.trim(); if(!text)return;
+  input.value='';
+  const status=localStorage.getItem(RSVP_STATUS_KEY);
+  const name=localStorage.getItem(NAME_KEY);
+  const displayName=(status==='go'||status==='maybe')&&name?name:'ヨロリアン';
+  waitForFirebase((db,fs)=>{
+    const {collection,addDoc,serverTimestamp}=fs;
+    addDoc(collection(db,'messages'),{name:displayName,text,ts:serverTimestamp()}).catch(()=>{});
+  });
+  addBloom();
+}
+document.getElementById('msgInput').addEventListener('keydown',e=>{if(e.key==='Enter')postMessage();});
+
+// ===== 管理者モード =====
+let pressTimer=null;
+const titleEl=document.getElementById('headerTitle');
+function startPress(){ pressTimer=setTimeout(()=>{ document.getElementById('adminModal').style.display='flex'; setTimeout(()=>document.getElementById('adminPwInput').focus(),100); },800); }
+function cancelPress(){ clearTimeout(pressTimer); }
+titleEl.addEventListener('mousedown',startPress);
+titleEl.addEventListener('mouseup',cancelPress);
+titleEl.addEventListener('mouseleave',cancelPress);
+titleEl.addEventListener('touchstart',e=>{e.preventDefault();startPress();},{passive:false});
+titleEl.addEventListener('touchend',cancelPress);
+titleEl.addEventListener('touchcancel',cancelPress);
+
+function checkAdminPw(){
+  if(document.getElementById('adminPwInput').value===ADMIN_PW){ closeAdminModal(); openAdminPanel(); }
+  else{ document.getElementById('adminError').style.display='block'; document.getElementById('adminPwInput').value=''; }
+}
+document.getElementById('adminPwInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkAdminPw();});
+function closeAdminModal(){ document.getElementById('adminModal').style.display='none'; document.getElementById('adminPwInput').value=''; document.getElementById('adminError').style.display='none'; }
+
+function openAdminPanel(){
+  document.getElementById('adminPanel').style.display='block';
+  waitForFirebase((db,fs)=>{
+    const {collection,onSnapshot,query,orderBy}=fs;
+    const q=query(collection(db,'rsvp'),orderBy('ts','asc'));
+    onSnapshot(q,snap=>{
+      const docs=snap.docs.map(d=>d.data());
+      const goList=docs.filter(r=>r.status==='go');
+      const maybeList=docs.filter(r=>r.status==='maybe');
+      document.getElementById('adminCount').textContent=goList.length+maybeList.length;
+      const list=document.getElementById('adminList');
+      list.innerHTML='';
+      if(goList.length>0){
+        const h=document.createElement('div');
+        h.style.cssText='font-size:0.68rem;font-weight:700;color:#2ecc71;letter-spacing:0.1em;margin:4px 0 8px;';
+        h.textContent='✅ 行くよ！ — '+goList.length+'人';
+        list.appendChild(h);
+        goList.forEach((r,i)=>{
+          const item=document.createElement('div'); item.className='admin-list-item';
+          const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
+          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>`;
+          list.appendChild(item);
+        });
+      }
+      if(maybeList.length>0){
+        const h=document.createElement('div');
+        h.style.cssText='font-size:0.68rem;font-weight:700;color:#f0729a;letter-spacing:0.1em;margin:16px 0 8px;';
+        h.textContent='🤔 たぶん行く — '+maybeList.length+'人';
+        list.appendChild(h);
+        maybeList.forEach((r,i)=>{
+          const item=document.createElement('div'); item.className='admin-list-item';
+          const time=r.ts?new Date(r.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
+          item.innerHTML=`<div class="admin-num">${i+1}</div><div class="admin-name">🌸 ${r.name}</div><div class="admin-time">${time}</div>`;
+          list.appendChild(item);
+        });
+      }
+      if(docs.length===0) list.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだ参加表明がありません</div>';
+    });
+  });
+}
+function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
+
+// ===== Live Photo アップロード（幹事用） =====
+document.getElementById('livePhotoInput').addEventListener('change', async(e)=>{
+  const file=e.target.files[0]; if(!file)return;
+  const status=document.getElementById('uploadStatus');
+  status.style.display='block'; status.textContent='⏳ アップロード中...';
+  const fd=new FormData();
+  fd.append('file',file);
+  fd.append('upload_preset',CLOUDINARY_PRESET);
+  fd.append('public_id',CLOUDINARY_PUBLIC_ID);
+  try{
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+    if(res.ok){ status.textContent='✅ アップロード完了！'; loadLivePhoto(); }
+    else{ status.textContent='❌ 失敗しました。再試行してください'; }
+  }catch(err){ status.textContent='❌ エラーが発生しました'; }
+  setTimeout(()=>{status.style.display='none'; e.target.value='';},3000);
+});
+</script>
+
+
+</html>
