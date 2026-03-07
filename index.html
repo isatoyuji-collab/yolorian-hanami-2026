@@ -474,19 +474,52 @@ function addBloom(){
 }
 renderBlooms(bloomCount);
 
-// ===== 天気 =====
+// ===== 天気 (API自動連携版) =====
 const isEventDay = new Date().getFullYear()===2026 && new Date().getMonth()===3 && new Date().getDate()===4;
 const weatherContent=document.getElementById('weatherContent');
 const weatherNote=document.getElementById('weatherNote');
-const todayMock={icon:'⛅',temp:'14',desc:'くもり時々晴れ',range:'↑17° ↓9°'};
+
+// 4/4当日の予報は、直前までAPIで取得できないため固定（イベント1週間前になったらここもAPI連携できます）
 const eventMock={icon:'🌸',temp:'18',desc:'晴れ！お花見日和',range:'↑21° ↓12°'};
-if(isEventDay){
-  weatherContent.innerHTML=`<div class="weather-single" style="padding:20px"><div class="weather-label blue" style="font-size:0.75rem;margin-bottom:8px">🌸 今日はお花見当日！</div><span class="weather-icon-lg">${eventMock.icon}</span><div class="weather-temp-lg">${eventMock.temp}<span>°C</span></div><div class="weather-desc" style="font-size:0.85rem;margin-top:6px">${eventMock.desc}</div><div class="weather-range" style="font-size:0.78rem;margin-top:4px">${eventMock.range}</div></div>`;
-  weatherNote.textContent='📍 大阪の天気（模擬データ）';
-} else {
-  weatherContent.innerHTML=`<div class="weather-grid"><div class="weather-box today"><div class="weather-label blue">TODAY 今日</div><span class="weather-icon">${todayMock.icon}</span><div class="weather-temp">${todayMock.temp}<span>°C</span></div><div class="weather-desc">${todayMock.desc}</div><div class="weather-range">${todayMock.range}</div></div><div class="weather-box"><div class="weather-label">4/4 当日予報</div><span class="weather-icon">${eventMock.icon}</span><div class="weather-temp">${eventMock.temp}<span>°C</span></div><div class="weather-desc">${eventMock.desc}</div><div class="weather-range">${eventMock.range}</div></div></div>`;
-  weatherNote.textContent='📍 大阪の予報（模擬データ）当日は暖かめ🌸 羽織もの持参がおすすめ';
+
+async function fetchRealWeather() {
+  try {
+    // 大阪城公園の緯度経度(34.6864, 135.5262)でOpen-Meteoから天気データを取得
+    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.6864&longitude=135.5262&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo');
+    const data = await res.json();
+
+    // 取得したデータから必要な数値を抜き出す
+    const currentTemp = Math.round(data.current_weather.temperature);
+    const maxTemp = Math.round(data.daily.temperature_2m_max[0]);
+    const minTemp = Math.round(data.daily.temperature_2m_min[0]);
+    const weatherCode = data.current_weather.weathercode;
+
+    // 天気コードをアイコンと日本語に変換
+    let icon = '⛅'; let desc = 'くもり';
+    if(weatherCode === 0) { icon = '☀️'; desc = '快晴'; }
+    else if(weatherCode <= 3) { icon = '⛅'; desc = '晴れ時々くもり'; }
+    else if(weatherCode <= 49) { icon = '☁️'; desc = 'くもり'; }
+    else if(weatherCode <= 69) { icon = '☔'; desc = '雨'; }
+    else if(weatherCode <= 79) { icon = '❄️'; desc = '雪'; }
+    else { icon = '🌧️'; desc = '荒れ模様'; }
+
+    const todayReal = { icon: icon, temp: currentTemp, desc: desc, range: `↑${maxTemp}° ↓${minTemp}°` };
+
+    // 画面に描画
+    if(isEventDay){
+      weatherContent.innerHTML=`<div class="weather-single" style="padding:20px"><div class="weather-label blue" style="font-size:0.75rem;margin-bottom:8px">🌸 今日はお花見当日！</div><span class="weather-icon-lg">${todayReal.icon}</span><div class="weather-temp-lg">${todayReal.temp}<span>°C</span></div><div class="weather-desc" style="font-size:0.85rem;margin-top:6px">${todayReal.desc}</div><div class="weather-range" style="font-size:0.78rem;margin-top:4px">${todayReal.range}</div></div>`;
+      weatherNote.textContent='📍 大阪城公園のリアルタイム天気';
+    } else {
+      weatherContent.innerHTML=`<div class="weather-grid"><div class="weather-box today"><div class="weather-label blue">TODAY 大阪城公園</div><span class="weather-icon">${todayReal.icon}</span><div class="weather-temp">${todayReal.temp}<span>°C</span></div><div class="weather-desc">${todayReal.desc}</div><div class="weather-range">${todayReal.range}</div></div><div class="weather-box"><div class="weather-label">4/4 当日予報</div><span class="weather-icon">${eventMock.icon}</span><div class="weather-temp">${eventMock.temp}<span>°C</span></div><div class="weather-desc">${eventMock.desc}</div><div class="weather-range">${eventMock.range}</div></div></div>`;
+      weatherNote.textContent='📍 今日の天気はリアルタイム自動更新中！';
+    }
+  } catch (error) {
+    console.error('天気データの取得に失敗しました', error);
+    weatherNote.textContent='📍 天気情報の取得に失敗しました';
+  }
 }
+
+fetchRealWeather();
 
 // ===== おみくじ =====
 const omikujiList=[
