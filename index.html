@@ -223,8 +223,8 @@
   .modal-error{font-size:0.75rem;color:#e05070;text-align:center;margin-top:-6px;margin-bottom:10px;display:none;}
 
   /* ADMIN PANEL */
-  .admin-panel{position:fixed;inset:0;z-index:300;background:#fff5f7;overflow-y:auto;display:none;}
-  .admin-header{background:linear-gradient(135deg,#2d1a2e,#4a2040);color:white;padding:20px 20px 16px;position:sticky;top:0;}
+  .admin-panel{position:fixed;inset:0;z-index:500;background:#fff5f7;overflow-y:auto;display:none;}
+  .admin-header{background:linear-gradient(135deg,#2d1a2e,#4a2040);color:white;padding:20px 20px 16px;position:sticky;top:0;z-index:501;}
   .admin-header-row{max-width:420px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
   .admin-title{font-family:'Dela Gothic One',sans-serif;font-size:1.1rem;}
   .admin-close{background:rgba(255,255,255,0.15);border:none;color:white;border-radius:10px;padding:6px 14px;font-family:'Zen Maru Gothic',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;}
@@ -985,26 +985,28 @@ function initPhotoSection(){
 
 function loadFilmRoll(type, rollId='filmRoll'){
   waitForFirebase((db,fs)=>{
-    const {collection,onSnapshot,query,orderBy,where}=fs;
-    let q;
-    if(type){
-      q=query(collection(db,'photos'),where('featured','==',true),where('type','==',type),orderBy('ts','asc'));
-    } else {
-      q=query(collection(db,'photos'),where('featured','==',true),orderBy('ts','asc'));
-    }
+    const {collection,onSnapshot,query,orderBy}=fs;
+    // whereとorderByの複合クエリはインデックスが必要なのでJS側でフィルタ
+    const q=query(collection(db,'photos'),orderBy('ts','asc'));
     onSnapshot(q,snap=>{
       const roll=document.getElementById(rollId);
       if(!roll) return;
-      if(snap.empty){ roll.innerHTML='<div class="film-frame film-frame-empty">🌸</div>'; return; }
+      const docs=snap.docs.filter(d=>{
+        const data=d.data();
+        if(!data.featured) return false;
+        if(type && data.type!==type) return false;
+        return true;
+      });
+      if(!docs.length){ roll.innerHTML='<div class="film-frame film-frame-empty">🌸</div>'; return; }
       roll.innerHTML='';
-      snap.docs.forEach(d=>{
+      docs.forEach(d=>{
         const data=d.data();
         const frame=document.createElement('div');
         frame.className='film-frame';
         const badge=data.type==='memory'
           ?'<span class="film-type-badge memory">思い出</span>'
           :'<span class="film-type-badge live">当日</span>';
-        frame.innerHTML=`<img src="${data.url}" loading="lazy"><${badge}`;
+        frame.innerHTML=`<img src="${data.url}" loading="lazy">${badge}`;
         frame.querySelector('img').addEventListener('click',()=>openLightbox(data.url));
         roll.appendChild(frame);
       });
