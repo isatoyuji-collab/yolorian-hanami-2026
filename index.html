@@ -933,6 +933,22 @@ function deletePhoto(docId){
   });
 }
 
+function deleteRSVP(docId){
+  if(!confirm('この参加表明を削除しますか？')) return;
+  waitForFirebase((db,fs)=>{
+    const {doc,deleteDoc}=fs;
+    deleteDoc(doc(db,'rsvp',docId)).catch(()=>alert('削除に失敗しました'));
+  });
+}
+
+function deleteMessage(docId){
+  if(!confirm('このメッセージを削除しますか？')) return;
+  waitForFirebase((db,fs)=>{
+    const {doc,deleteDoc}=fs;
+    deleteDoc(doc(db,'messages',docId)).catch(()=>alert('削除に失敗しました'));
+  });
+}
+
 // ===== フォトセクション（3段階） =====
 function initPhotoSection(){
   const el=document.getElementById('photoContent');
