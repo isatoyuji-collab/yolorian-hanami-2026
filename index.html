@@ -844,6 +844,7 @@ function closeAdminModal(){ document.getElementById('adminModal').style.display=
 
 function openAdminPanel(){
   document.getElementById('adminPanel').style.display='flex';
+  document.querySelector('.sticky-header').style.display='none';
   document.querySelector('.header-contacts').style.display='none';
   waitForFirebase((db,fs)=>{
     const {collection,onSnapshot,query,orderBy,doc,updateDoc,deleteDoc,where}=fs;
@@ -913,6 +914,7 @@ function openAdminPanel(){
 }
 function closeAdminPanel(){
   document.getElementById('adminPanel').style.display='none';
+  document.querySelector('.sticky-header').style.display='block';
   document.querySelector('.header-contacts').style.display='flex';
 }
 
