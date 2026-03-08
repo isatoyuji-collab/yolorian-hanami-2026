@@ -61,7 +61,7 @@
   .tree-wrap{text-align:center;position:relative;padding:10px 0 6px;}
   .tree-svg-area{display:inline-block;position:relative;}
   .tree-svg-area svg{display:block;}
-  .tree-counter{margin-top:10px;font-size:0.75rem;color:#a06080;font-weight:700;}
+  .tree-counter{margin-top:10px;font-size:0.75rem;color:#a06080;}
   .tree-counter strong{font-family:'Dela Gothic One',sans-serif;font-size:1.1rem;color:var(--sakura-deep);}
   .bloom-particle{
     position:absolute;font-size:1.1rem;pointer-events:none;
@@ -160,6 +160,52 @@
   .msg-text{font-size:0.85rem;line-height:1.5;}
   .footer-spacer{height:60px;}
 
+  /* ===== PHOTO SECTION ===== */
+  .film-section-title{font-family:'Dela Gothic One',sans-serif;font-size:0.95rem;color:var(--sakura-deep);margin-bottom:4px;}
+  .film-section-sub{font-size:0.68rem;color:#a06080;margin-bottom:12px;}
+  .film-roll{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .film-roll::-webkit-scrollbar{display:none;}
+  .film-frame{flex:0 0 130px;height:130px;border-radius:18px;overflow:hidden;position:relative;background:rgba(255,183,197,0.2);border:2px solid rgba(255,183,197,0.3);cursor:pointer;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 14px rgba(240,114,154,0.1);}
+  .film-frame:active{transform:scale(0.93);}
+  .film-frame:hover{transform:scale(1.04);}
+  .film-frame img{width:100%;height:100%;object-fit:cover;}
+  .film-frame-empty{display:flex;align-items:center;justify-content:center;font-size:2rem;opacity:0.35;}
+  .film-type-badge{position:absolute;bottom:6px;left:6px;font-size:0.55rem;font-weight:700;padding:2px 7px;border-radius:999px;backdrop-filter:blur(4px);}
+  .film-type-badge.memory{background:rgba(45,26,46,0.55);color:#ffb7c5;}
+  .film-type-badge.live{background:rgba(255,75,110,0.75);color:white;}
+  /* 前日告知バー */
+  .photo-announce{background:linear-gradient(135deg,rgba(255,126,179,0.1),rgba(255,183,197,0.06));border:1.5px dashed rgba(255,183,197,0.5);border-radius:16px;padding:14px 16px;margin-top:14px;display:flex;align-items:center;gap:12px;}
+  .photo-announce-icon{font-size:1.8rem;flex-shrink:0;}
+  .photo-announce-text strong{display:block;font-size:0.8rem;color:var(--sakura-deep);margin-bottom:3px;font-weight:700;}
+  .photo-announce-text span{font-size:0.7rem;color:#a06080;line-height:1.6;}
+  /* 当日投稿ボタン */
+  .btn-photo-upload{width:100%;padding:15px;border-radius:18px;border:none;background:linear-gradient(135deg,#ff7eb3,#f0729a);color:white;font-family:'Dela Gothic One',sans-serif;font-size:0.95rem;cursor:pointer;margin-top:14px;box-shadow:0 5px 18px rgba(240,114,154,0.35);transition:all 0.18s cubic-bezier(0.34,1.56,0.64,1);letter-spacing:0.03em;}
+  .btn-photo-upload:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(240,114,154,0.45);}
+  .btn-photo-upload:active{transform:scale(0.95);}
+  /* 後日エモコピー */
+  .emo-copy-wrap{text-align:center;padding:22px 8px 10px;}
+  .emo-copy-deco{font-size:1.6rem;display:block;margin-bottom:10px;animation:bounce-in 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+  .emo-copy-main{font-family:'Dela Gothic One',sans-serif;font-size:1.2rem;color:var(--sakura-deep);line-height:1.6;letter-spacing:0.04em;text-shadow:0 2px 12px rgba(240,114,154,0.2);}
+  .emo-copy-sub{font-size:0.72rem;color:#b080a0;margin-top:10px;line-height:1.8;}
+  /* ライトボックス */
+  .lightbox{position:fixed;inset:0;z-index:400;background:rgba(18,8,20,0.93);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade-in 0.2s ease;}
+  .lightbox-inner{position:relative;}
+  .lightbox-inner img{max-width:100%;max-height:80vh;border-radius:18px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+  .lightbox-close{position:absolute;top:-16px;right:-16px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:1.1rem;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+  /* 幹事パネル画像庫 */
+  .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+  .gallery-item{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:rgba(255,183,197,0.15);}
+  .gallery-item img{width:100%;height:100%;object-fit:cover;}
+  .gallery-item-actions{position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity 0.2s;}
+  .gallery-item:hover .gallery-item-actions,.gallery-item:active .gallery-item-actions{opacity:1;}
+  .gallery-action-btn{background:white;border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;}
+  .gallery-action-btn.star{color:#f0729a;}
+  .gallery-action-btn.trash{color:#e05070;}
+  .gallery-item.featured::after{content:'⭐';position:absolute;top:5px;right:5px;font-size:1rem;}
+  .gallery-item-type{position:absolute;bottom:5px;left:5px;font-size:0.55rem;font-weight:700;padding:2px 7px;border-radius:999px;}
+  .gallery-item-type.memory{background:rgba(45,26,46,0.6);color:#ffb7c5;}
+  .gallery-item-type.live{background:rgba(255,75,110,0.7);color:white;}
+
   /* MODAL */
   .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(45,26,46,0.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade-in 0.2s ease;}
   @keyframes fade-in{0%{opacity:0;}100%{opacity:1;}}
@@ -177,8 +223,8 @@
   .modal-error{font-size:0.75rem;color:#e05070;text-align:center;margin-top:-6px;margin-bottom:10px;display:none;}
 
   /* ADMIN PANEL */
-  .admin-panel{position:fixed;inset:0;z-index:9999;background:#fff5f7;overflow-y:auto;display:none;}
-  .admin-header{background:linear-gradient(135deg,#2d1a2e,#4a2040);color:white;padding:calc(20px + env(safe-area-inset-top)) 20px 16px;position:sticky;top:0;z-index:10000;}
+  .admin-panel{position:fixed;inset:0;z-index:300;background:#fff5f7;overflow-y:auto;display:none;}
+  .admin-header{background:linear-gradient(135deg,#2d1a2e,#4a2040);color:white;padding:20px 20px 16px;position:sticky;top:0;}
   .admin-header-row{max-width:420px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
   .admin-title{font-family:'Dela Gothic One',sans-serif;font-size:1.1rem;}
   .admin-close{background:rgba(255,255,255,0.15);border:none;color:white;border-radius:10px;padding:6px 14px;font-family:'Zen Maru Gothic',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;}
@@ -191,9 +237,10 @@
   .admin-name{font-size:0.95rem;font-weight:700;flex:1;}
   .admin-time{font-size:0.65rem;color:#c0a0b0;}
 </style>
+<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyABVzb-96iPwmhAiMxFW7xj98pt54lzhF0",
@@ -207,62 +254,72 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Firebaseをグローバルに公開
 window._db = db;
-window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp, deleteDoc };
+window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp };
 </script>
 </head>
 <body>
 <div class="bg-mesh"></div>
 <div class="petal-bg" id="petalContainer"></div>
 
+<!-- HEADER -->
 <header class="sticky-header">
   <div class="header-top">
     <div class="header-title" id="headerTitle" style="user-select:none;-webkit-user-select:none;">🌸 ヨロリアン桜集合！</div>
     <div class="live-badge">● LIVE 開催中</div>
   </div>
   <div class="header-contacts">
-    <a href="https://line.me/ti/p/ikCKJNMUPU" class="hc-btn line"><i class="bi bi-line"></i> LINEで連絡</a>
-    <a href="tel:08030281863" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
+    <a href="https://line.me/ti/p/【幹事ID】" class="hc-btn line"><i class="bi bi-line"></i> LINEで連絡</a>
+    <a href="tel:00000000000" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
   </div>
 </header>
 
 <main>
 
+  <!-- HERO -->
   <div class="hero">
     <span class="hero-emoji">🌸</span>
     <h1 class="hero-title">去る人も残る人も<br>みんなで春を！</h1>
     <p class="hero-sub">2026年4月4日（土）14:00〜21:00<br>大阪城公園 / BYOB・飲めない人も大歓迎</p>
   </div>
 
+  <!-- SAKURA TREE -->
   <div class="glass-card">
-    <div class="section-label"><i class="bi bi-tree-fill"></i> Our Sakura Tree / 参加表明で花が咲く！</div>
+    <div class="section-label"><i class="bi bi-tree-fill"></i> Our Sakura Tree / みんなで育てる桜</div>
     <div class="tree-wrap">
       <div class="tree-svg-area" id="treeSvgArea">
         <svg id="treeSvg" width="280" height="220" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- 幹 -->
           <path d="M130 210 Q128 170 125 150 Q122 130 130 110" stroke="#a0724a" stroke-width="10" fill="none" stroke-linecap="round"/>
           <path d="M150 210 Q152 170 155 150 Q158 130 150 110" stroke="#a0724a" stroke-width="10" fill="none" stroke-linecap="round"/>
           <path d="M130 210 L150 210" stroke="#a0724a" stroke-width="10" fill="none"/>
+          <!-- 枝 -->
           <path d="M138 150 Q110 140 85 120" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
           <path d="M140 140 Q115 110 100 85" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
           <path d="M142 130 Q145 95 140 70" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
           <path d="M144 140 Q170 110 185 85" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
           <path d="M142 150 Q168 138 195 122" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <!-- 芝生 -->
           <ellipse cx="140" cy="212" rx="90" ry="8" fill="#c8e6a0" opacity="0.6"/>
+          <!-- 花グループ（JSで追加） -->
           <g id="bloomGroup"></g>
         </svg>
       </div>
       <div class="tree-counter">
-        🌸 ヨロリアンの参加数に応じて桜が満開になります
+        ヨロリアンの数だけ花が咲く🌸
       </div>
     </div>
   </div>
 
+  <!-- WEATHER -->
   <div class="glass-card" id="weatherCard">
     <div class="section-label"><i class="bi bi-cloud-sun-fill"></i> Weather / 天気予報</div>
-    <div id="weatherContent"></div>
+    <div id="weatherContent"><!-- JSで描画 --></div>
     <div class="weather-note" id="weatherNote"></div>
   </div>
 
+  <!-- EVENT INFO -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-calendar3"></i> Event Info</div>
     <div class="info-grid">
@@ -273,26 +330,30 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
+
+  <!-- RSVP -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-people-fill"></i> RSVP / 参加表明</div>
+    <!-- ボタン群 -->
     <div id="rsvpButtons">
       <button class="btn-rsvp go" onclick="doRSVP('go')">🙋 行くよ！</button>
       <button class="btn-rsvp maybe" onclick="doRSVP('maybe')" style="margin-top:10px">🤔 たぶん行く…</button>
       <button class="btn-rsvp watch" onclick="doRSVP('watch')" style="margin-top:10px">👀 当日決める！</button>
     </div>
+    <!-- 選択後ステータス -->
     <div id="rsvpStatus" style="display:none">
       <div class="rsvp-status-box" id="rsvpStatusBox"></div>
       <button class="btn-rsvp-change" id="rsvpChangeBtn" style="display:none" onclick="upgradeToGo()">🙋 やっぱり「行くよ！」に変更する</button>
     </div>
   </div>
-  
+  <!-- MAP + LIVE PHOTO -->
   <div class="glass-card">
-    <div class="section-label"><i class="bi bi-geo-alt-fill"></i> Location / 場所 & 現在地</div>
+    <div class="section-label"><i class="bi bi-geo-alt-fill"></i> Location / 場所 &amp; 現在地</div>
     <div class="map-photo-grid">
       <div class="map-photo-item">
         <div class="map-photo-label"><i class="bi bi-map"></i> 地図</div>
         <div class="map-thumb"><div class="map-pin">📍</div><div class="map-name">大阪城公園</div></div>
-       <a href="https://maps.google.com/?q=大阪城公園" class="btn-map-small"><i class="bi bi-map"></i> Google Mapsで開く</a>
+        <a href="https://maps.apple.com/?q=大阪城公園" class="btn-map-small"><i class="bi bi-map"></i> Mapsで開く</a>
       </div>
       <div class="map-photo-item">
         <div class="map-photo-label"><i class="bi bi-camera-fill"></i> 現在地</div>
@@ -306,14 +367,13 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
-  <div class="glass-card">
-    <div class="section-label"><i class="bi bi-stars"></i> Omikuji / お花見おみくじ</div>
-    <div class="omikuji-result" id="omikujiResult">
-      <div class="omikuji-placeholder">🎋 ボタンを押してみてね！</div>
-    </div>
-    <button class="btn-omikuji" onclick="drawOmikuji()">🎋 おみくじを引く</button>
+  <!-- PHOTO SECTION -->
+  <div class="glass-card" id="photoSection">
+    <div class="section-label"><i class="bi bi-images"></i> Photos / みんなの桜の記憶</div>
+    <div id="photoContent"><!-- JSで描画 --></div>
   </div>
 
+  <!-- MESSAGE BOARD -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-chat-heart-fill"></i> Message Board / 一言どうぞ！</div>
     <div class="message-input-wrap">
@@ -321,9 +381,22 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       <button class="btn-post" onclick="postMessage()">🌸</button>
     </div>
     <div class="messages-list" id="messagesList">
-      </div>
+      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">13:42</span></div><div class="msg-text">お疲れ様でした！絶対行きます！！</div></div>
+      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">13:55</span></div><div class="msg-text">レジャーシート持っていくね〜</div></div>
+      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">14:01</span></div><div class="msg-text">みんなと最後にお花見できて嬉しい🌸</div></div>
+    </div>
   </div>
 
+  <!-- OMIKUJI（後日は非表示） -->
+  <div class="glass-card" id="omikujiCard">
+    <div class="section-label"><i class="bi bi-stars"></i> Omikuji / お花見おみくじ</div>
+    <div class="omikuji-result" id="omikujiResult">
+      <div class="omikuji-placeholder">🎋 ボタンを押してみてね！</div>
+    </div>
+    <button class="btn-omikuji" onclick="drawOmikuji()">🎋 おみくじを引く</button>
+  </div>
+
+  <!-- 名前入力モーダル（RSVP時） -->
   <div class="modal-overlay" id="nameModal" style="display:none">
     <div class="modal-box">
       <span class="modal-emoji">🙋</span>
@@ -335,6 +408,19 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
+  <!-- 名前入力モーダル（コメント投稿時） -->
+  <div class="modal-overlay" id="commentNameModal" style="display:none">
+    <div class="modal-box">
+      <span class="modal-emoji">💬</span>
+      <div class="modal-title">お名前を教えてください</div>
+      <div class="modal-sub">コメントに表示される名前です🌸</div>
+      <input class="modal-input" type="text" id="commentNameInput" placeholder="例：田中さん" maxlength="20">
+      <button class="modal-btn primary" onclick="submitCommentName()">🌸 投稿する！</button>
+      <button class="modal-btn secondary" onclick="closeCommentNameModal()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- 管理者パスワードモーダル -->
   <div class="modal-overlay" id="adminModal" style="display:none">
     <div class="modal-box">
       <span class="modal-emoji">🔑</span>
@@ -347,10 +433,11 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     </div>
   </div>
 
+  <!-- 管理者パネル -->
   <div class="admin-panel" id="adminPanel">
     <div class="admin-header">
       <div class="admin-header-row">
-        <div class="admin-title">🔑 幹事モード — 管理画面</div>
+        <div class="admin-title">🔑 幹事モード — 参加者リスト</div>
         <button class="admin-close" onclick="closeAdminPanel()">閉じる</button>
       </div>
     </div>
@@ -358,8 +445,9 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       <div class="admin-count" id="adminCount">0</div>
       <div class="admin-count-label">人が参加表明しています</div>
 
-      <div style="background:white;border-radius:20px;padding:16px;margin-bottom:20px;border:1px solid rgba(255,183,197,0.3);">
-        <div style="font-size:0.72rem;font-weight:700;color:#c070a0;margin-bottom:10px;">📸 Live Photo を更新</div>
+      <!-- Live Photo アップロード -->
+      <div style="background:white;border-radius:20px;padding:16px;margin-bottom:16px;border:1px solid rgba(255,183,197,0.3);">
+        <div style="font-size:0.72rem;font-weight:700;color:#c070a0;margin-bottom:10px;">📍 現在地 Live Photo を更新</div>
         <input type="file" id="livePhotoInput" accept="image/*" capture="environment" style="display:none">
         <button onclick="document.getElementById('livePhotoInput').click()" style="width:100%;padding:12px;border-radius:14px;border:2px dashed rgba(255,183,197,0.6);background:rgba(255,240,244,0.5);color:#c070a0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">
           📷 写真を選択してアップロード
@@ -367,13 +455,27 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
         <div id="uploadStatus" style="font-size:0.72rem;color:#a06080;text-align:center;margin-top:8px;display:none;"></div>
       </div>
 
+      <!-- 思い出写真アップロード -->
+      <div style="background:white;border-radius:20px;padding:16px;margin-bottom:20px;border:1px solid rgba(255,183,197,0.3);">
+        <div style="font-size:0.72rem;font-weight:700;color:#c070a0;margin-bottom:6px;">🎞 思い出写真を追加（フィルムロール用）</div>
+        <div style="font-size:0.65rem;color:#a06080;margin-bottom:10px;">アップ後に画像庫で⭐すると表示されます</div>
+        <input type="file" id="memoryPhotoInput" accept="image/*" style="display:none">
+        <button onclick="document.getElementById('memoryPhotoInput').click()" style="width:100%;padding:12px;border-radius:14px;border:2px dashed rgba(255,183,197,0.6);background:rgba(255,240,244,0.5);color:#c070a0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">
+          🖼 思い出写真をアップ
+        </button>
+        <div id="memoryUploadStatus" style="font-size:0.72rem;color:#a06080;text-align:center;margin-top:8px;display:none;"></div>
+      </div>
+
       <div class="admin-list" id="adminList"></div>
 
-      <div style="margin-top:32px; padding-top:20px; border-top:1px dashed #f0729a;">
-        <div style="font-size:0.75rem;font-weight:700;color:#c070a0;margin-bottom:12px;"><i class="bi bi-chat-heart-fill"></i> 掲示板の管理</div>
-        <div class="admin-list" id="adminMessagesList"></div>
+      <!-- 画像庫管理 -->
+      <div style="margin-top:32px;padding-top:20px;border-top:1px dashed rgba(255,183,197,0.6);">
+        <div style="font-size:0.75rem;font-weight:700;color:#c070a0;margin-bottom:6px;">🖼 画像庫（みんながアップした写真）</div>
+        <div style="font-size:0.68rem;color:#a06080;margin-bottom:12px;">⭐をタップするとフィルムロールに追加・削除できます</div>
+        <div class="gallery-grid" id="adminGalleryGrid">
+          <div style="text-align:center;color:#c0a0b0;font-size:0.8rem;padding:20px;grid-column:span 3">読み込み中...</div>
+        </div>
       </div>
-      
     </div>
   </div>
 
@@ -386,33 +488,29 @@ const CLOUDINARY_CLOUD = 'dohyqxvje';
 const CLOUDINARY_PRESET = 'hanami_live';
 const CLOUDINARY_PUBLIC_ID = 'hanami/latest';
 
-// ===== 🍃 花びら背景（コメント連動ギミック） =====
+// 日付判定
+const now = new Date();
+const EVENT_DAY  = new Date(2026,3,4); // 4/4
+const AFTER_DAY  = new Date(2026,3,5); // 4/5
+const isBeforeEvent = now < EVENT_DAY;
+const isEventDay2   = now >= EVENT_DAY && now < AFTER_DAY;
+const isAfterEvent  = now >= AFTER_DAY;
+
+// ===== 花びら背景 =====
 const emojis=['🌸','🌺','🌷','✿','❀'];
 const cont=document.getElementById('petalContainer');
-let currentPetalCount = 0;
-
-function updatePetals(uniqueUserCount) {
-  // 初期5枚 + (ユニークユーザー数 × 3) 枚、最大50枚まで
-  const targetCount = Math.min(5 + (uniqueUserCount * 3), 50);
-  
-  if (targetCount > currentPetalCount) {
-    const diff = targetCount - currentPetalCount;
-    for(let i=0; i<diff; i++){
-      const p=document.createElement('div'); p.className='petal';
-      p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-      p.style.left=Math.random()*100+'%';
-      p.style.animationDuration=(5+Math.random()*8)+'s';
-      p.style.animationDelay=(-Math.random()*10)+'s';
-      p.style.fontSize=(1+Math.random()*0.8)+'rem';
-      p.style.opacity=0.4+Math.random()*0.4;
-      cont.appendChild(p);
-    }
-    currentPetalCount = targetCount;
-  }
+for(let i=0;i<18;i++){
+  const p=document.createElement('div'); p.className='petal';
+  p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  p.style.left=Math.random()*100+'%';
+  p.style.animationDuration=(5+Math.random()*8)+'s';
+  p.style.animationDelay=(-Math.random()*10)+'s';
+  p.style.fontSize=(1+Math.random()*0.8)+'rem';
+  p.style.opacity=0.4+Math.random()*0.4;
+  cont.appendChild(p);
 }
-updatePetals(0); // 画面を開いた時は初期の5枚
 
-// ===== 🌸 桜の木（15人で満開ギミック） =====
+// ===== 桜の木 =====
 const branchTips=[
   {x:85,y:120},{x:100,y:85},{x:140,y:70},{x:185,y:85},{x:195,y:122},
   {x:70,y:108},{x:92,y:72},{x:140,y:55},{x:192,y:70},{x:210,y:110},
@@ -421,7 +519,7 @@ const branchTips=[
   {x:42,y:158},{x:65,y:38},{x:215,y:38},{x:238,y:156},{x:140,y:18},
   {x:112,y:40},{x:168,y:40},{x:95,y:100},{x:185,y:100},{x:140,y:85},
 ];
-let bloomCount=0; // 最初は0からスタート
+let bloomCount=4;
 const bloomGroup=document.getElementById('bloomGroup');
 
 function renderBlooms(count){
@@ -448,7 +546,9 @@ function renderBlooms(count){
 }
 
 function addBloom(){
-  // 花を咲かせるアニメーション用
+  if(bloomCount>=branchTips.length) return;
+  bloomCount++;
+  renderBlooms(bloomCount);
   const area=document.getElementById('treeSvgArea');
   const rect=area.getBoundingClientRect();
   for(let i=0;i<4;i++){
@@ -466,46 +566,19 @@ function addBloom(){
 }
 renderBlooms(bloomCount);
 
-// ===== 天気 (API自動連携版) =====
+// ===== 天気 =====
 const isEventDay = new Date().getFullYear()===2026 && new Date().getMonth()===3 && new Date().getDate()===4;
 const weatherContent=document.getElementById('weatherContent');
 const weatherNote=document.getElementById('weatherNote');
-
+const todayMock={icon:'⛅',temp:'14',desc:'くもり時々晴れ',range:'↑17° ↓9°'};
 const eventMock={icon:'🌸',temp:'18',desc:'晴れ！お花見日和',range:'↑21° ↓12°'};
-
-async function fetchRealWeather() {
-  try {
-    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.6864&longitude=135.5262&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo');
-    const data = await res.json();
-
-    const currentTemp = Math.round(data.current_weather.temperature);
-    const maxTemp = Math.round(data.daily.temperature_2m_max[0]);
-    const minTemp = Math.round(data.daily.temperature_2m_min[0]);
-    const weatherCode = data.current_weather.weathercode;
-
-    let icon = '⛅'; let desc = 'くもり';
-    if(weatherCode === 0) { icon = '☀️'; desc = '快晴'; }
-    else if(weatherCode <= 3) { icon = '⛅'; desc = '晴れ時々くもり'; }
-    else if(weatherCode <= 49) { icon = '☁️'; desc = 'くもり'; }
-    else if(weatherCode <= 69) { icon = '☔'; desc = '雨'; }
-    else if(weatherCode <= 79) { icon = '❄️'; desc = '雪'; }
-    else { icon = '🌧️'; desc = '荒れ模様'; }
-
-    const todayReal = { icon: icon, temp: currentTemp, desc: desc, range: `↑${maxTemp}° ↓${minTemp}°` };
-
-    if(isEventDay){
-      weatherContent.innerHTML=`<div class="weather-single" style="padding:20px"><div class="weather-label blue" style="font-size:0.75rem;margin-bottom:8px">🌸 今日はお花見当日！</div><span class="weather-icon-lg">${todayReal.icon}</span><div class="weather-temp-lg">${todayReal.temp}<span>°C</span></div><div class="weather-desc" style="font-size:0.85rem;margin-top:6px">${todayReal.desc}</div><div class="weather-range" style="font-size:0.78rem;margin-top:4px">${todayReal.range}</div></div>`;
-      weatherNote.textContent='📍 大阪城公園のリアルタイム天気';
-    } else {
-      weatherContent.innerHTML=`<div class="weather-grid"><div class="weather-box today"><div class="weather-label blue">TODAY 大阪城公園</div><span class="weather-icon">${todayReal.icon}</span><div class="weather-temp">${todayReal.temp}<span>°C</span></div><div class="weather-desc">${todayReal.desc}</div><div class="weather-range">${todayReal.range}</div></div><div class="weather-box"><div class="weather-label">4/4 当日予報</div><span class="weather-icon">${eventMock.icon}</span><div class="weather-temp">${eventMock.temp}<span>°C</span></div><div class="weather-desc">${eventMock.desc}</div><div class="weather-range">${eventMock.range}</div></div></div>`;
-      weatherNote.textContent='📍 今日の天気はリアルタイム自動更新中！';
-    }
-  } catch (error) {
-    console.error('天気データの取得に失敗しました', error);
-    weatherNote.textContent='📍 天気情報の取得に失敗しました';
-  }
+if(isEventDay){
+  weatherContent.innerHTML=`<div class="weather-single" style="padding:20px"><div class="weather-label blue" style="font-size:0.75rem;margin-bottom:8px">🌸 今日はお花見当日！</div><span class="weather-icon-lg">${eventMock.icon}</span><div class="weather-temp-lg">${eventMock.temp}<span>°C</span></div><div class="weather-desc" style="font-size:0.85rem;margin-top:6px">${eventMock.desc}</div><div class="weather-range" style="font-size:0.78rem;margin-top:4px">${eventMock.range}</div></div>`;
+  weatherNote.textContent='📍 大阪の天気（模擬データ）';
+} else {
+  weatherContent.innerHTML=`<div class="weather-grid"><div class="weather-box today"><div class="weather-label blue">TODAY 今日</div><span class="weather-icon">${todayMock.icon}</span><div class="weather-temp">${todayMock.temp}<span>°C</span></div><div class="weather-desc">${todayMock.desc}</div><div class="weather-range">${todayMock.range}</div></div><div class="weather-box"><div class="weather-label">4/4 当日予報</div><span class="weather-icon">${eventMock.icon}</span><div class="weather-temp">${eventMock.temp}<span>°C</span></div><div class="weather-desc">${eventMock.desc}</div><div class="weather-range">${eventMock.range}</div></div></div>`;
+  weatherNote.textContent='📍 大阪の予報（模擬データ）当日は暖かめ🌸 羽織もの持参がおすすめ';
 }
-fetchRealWeather();
 
 // ===== おみくじ =====
 const omikujiList=[
@@ -548,23 +621,26 @@ function loadLivePhoto(){
   img.onload = () => {
     thumb.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:18px;"><div class="live-dot-badge"><div class="photo-dot"></div> LIVE</div>`;
   };
-  img.onerror = () => {}; 
+  img.onerror = () => {}; // 画像なければプレースホルダーのまま
   img.src = url;
 }
 loadLivePhoto();
+// 3分ごとに自動更新
 setInterval(loadLivePhoto, 3 * 60 * 1000);
 
-// ===== RSVP (参加表明の取得と桜の反映) =====
+// ===== RSVP =====
 let rsvpCount = 0;
 const savedStatus = localStorage.getItem(RSVP_STATUS_KEY);
 if(savedStatus) showRsvpStatus(savedStatus, localStorage.getItem(NAME_KEY));
 
+// Firestoreからブルーム数を反映
 waitForFirebase((db, fs)=>{
   const {collection, onSnapshot, query} = fs;
+  // RSVP リアルタイム購読
   onSnapshot(query(collection(db,'rsvp')), snap=>{
     const count = snap.size;
-    // 🌸 1人につき2つの花が咲く（15人で30箇所満開！）
-    const target = Math.min(count * 2, branchTips.length);
+    // bloomに反映（ベース4 + Firestore件数）
+    const target = Math.min(4 + count, branchTips.length);
     if(target > bloomCount){
       bloomCount = target;
       renderBlooms(bloomCount);
@@ -648,28 +724,21 @@ function closeNameModal(){
 }
 document.getElementById('modalNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitRSVPName();});
 
-// ===== 掲示板（Firestore取得と花びら連動） =====
+// ===== 掲示板（Firestore） =====
 waitForFirebase((db,fs)=>{
-  const {collection,onSnapshot,query,orderBy}=fs;
-  const q=query(collection(db,'messages'),orderBy('ts','desc'));
+  const {collection,onSnapshot,query,orderBy,limit,addDoc,serverTimestamp}=fs;
+  // 最新20件をリアルタイム購読
+  const q=query(collection(db,'messages'),orderBy('ts','desc'),limit(20));
   let first=true;
   onSnapshot(q,snap=>{
-    
-    // 🍃 ユニークユーザー数を数えて花びらの枚数を更新！
-    const uniqueNames = new Set();
-    snap.docs.forEach(d => {
-       const data = d.data();
-       if(data.name) uniqueNames.add(data.name);
-    });
-    updatePetals(uniqueNames.size);
-
     if(first){
+      // 初回：全件描画
       first=false;
       const list=document.getElementById('messagesList');
       list.innerHTML='';
-      // 画面のUIには最新20件だけを表示
-      snap.docs.slice(0, 20).reverse().forEach(d=>appendMessage(d.data()));
+      snap.docs.reverse().forEach(d=>appendMessage(d.data()));
     } else {
+      // 差分のみ追加
       snap.docChanges().forEach(change=>{
         if(change.type==='added') prependMessage(change.doc.data());
       });
@@ -689,30 +758,52 @@ function prependMessage(data){
 function createBubble(data){
   const bubble=document.createElement('div'); bubble.className='message-bubble';
   const time = data.ts ? new Date(data.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}) : '--:--';
-  // 文字化け・荒らし対策（サニタイズ）
-  const safeText = (data.text||'').replace(/</g,'&lt;');
-  bubble.innerHTML=`<div class="msg-header"><span class="msg-name">🌸 ${data.name||'ヨロリアン'}</span><span class="msg-time">${time}</span></div><div class="msg-text">${safeText}</div>`;
+  bubble.innerHTML=`<div class="msg-header"><span class="msg-name">🌸 ${data.name||'ヨロリアン'}</span><span class="msg-time">${time}</span></div><div class="msg-text">${(data.text||'').replace(/</g,'&lt;')}</div>`;
   return bubble;
 }
 
 function postMessage(){
   const input=document.getElementById('msgInput');
-  const text=input.value.trim(); if(!text)return;
+  const text=input.value.trim(); if(!text) return;
 
-  // 名前が未登録ならポップアップで聞く
-  let name = localStorage.getItem(NAME_KEY);
-  if (!name) {
-    name = prompt("コメントを投稿するためのお名前を教えてください🌸");
-    if (!name || name.trim() === "") return; 
-    localStorage.setItem(NAME_KEY, name.trim());
+  const name=localStorage.getItem(NAME_KEY);
+  if(!name){
+    // 名前未登録 → モーダルで聞く
+    document.getElementById('commentNameModal').dataset.text=text;
+    document.getElementById('commentNameModal').style.display='flex';
+    setTimeout(()=>document.getElementById('commentNameInput').focus(),100);
+    return;
   }
-
   input.value='';
+  _sendMessage(name, text);
+}
+
+function submitCommentName(){
+  const name=document.getElementById('commentNameInput').value.trim();
+  if(!name) return;
+  localStorage.setItem(NAME_KEY, name);
+  const text=document.getElementById('commentNameModal').dataset.text||'';
+  closeCommentNameModal();
+  document.getElementById('msgInput').value='';
+  if(text) _sendMessage(name, text);
+}
+
+function closeCommentNameModal(){
+  document.getElementById('commentNameModal').style.display='none';
+  document.getElementById('commentNameInput').value='';
+}
+document.getElementById('commentNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitCommentName();});
+
+function _sendMessage(name, text){
+  const status=localStorage.getItem(RSVP_STATUS_KEY);
+  const displayName=(status==='go'||status==='maybe')&&name?name:'🌸 ヨロリアン';
   waitForFirebase((db,fs)=>{
     const {collection,addDoc,serverTimestamp}=fs;
-    addDoc(collection(db,'messages'),{name: name.trim(), text, ts:serverTimestamp()}).catch(()=>{});
+    addDoc(collection(db,'messages'),{name:displayName,text,ts:serverTimestamp()}).catch(()=>{});
   });
+  addBloom();
 }
+document.getElementById('msgInput').addEventListener('keydown',e=>{if(e.key==='Enter')postMessage();});
 
 // ===== 管理者モード =====
 let pressTimer=null;
@@ -736,19 +827,17 @@ function closeAdminModal(){ document.getElementById('adminModal').style.display=
 function openAdminPanel(){
   document.getElementById('adminPanel').style.display='block';
   waitForFirebase((db,fs)=>{
-    const {collection,onSnapshot,query,orderBy}=fs;
-    
+    const {collection,onSnapshot,query,orderBy,doc,updateDoc,deleteDoc,where}=fs;
+
     // --- ① 参加者リスト ---
-    const qRsvp=query(collection(db,'rsvp'),orderBy('ts','asc'));
-    onSnapshot(qRsvp,snap=>{
-      const docs=snap.docs.map(d=>({ id: d.id, ...d.data() }));
+    const q=query(collection(db,'rsvp'),orderBy('ts','asc'));
+    onSnapshot(q,snap=>{
+      const docs=snap.docs.map(d=>({id:d.id,...d.data()}));
       const goList=docs.filter(r=>r.status==='go');
       const maybeList=docs.filter(r=>r.status==='maybe');
       document.getElementById('adminCount').textContent=goList.length+maybeList.length;
       const list=document.getElementById('adminList');
-      if(!list) return;
       list.innerHTML='';
-      
       if(goList.length>0){
         const h=document.createElement('div');
         h.style.cssText='font-size:0.68rem;font-weight:700;color:#2ecc71;letter-spacing:0.1em;margin:4px 0 8px;';
@@ -778,53 +867,180 @@ function openAdminPanel(){
       if(docs.length===0) list.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだ参加表明がありません</div>';
     });
 
-    // --- ② 掲示板メッセージリスト ---
-    const qMsg=query(collection(db,'messages'),orderBy('ts','desc'));
-    onSnapshot(qMsg,snap=>{
-      const msgList=document.getElementById('adminMessagesList');
-      if(!msgList) return;
-      msgList.innerHTML='';
-      if(snap.empty) {
-        msgList.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだメッセージはありません</div>';
-        return;
-      }
-      snap.docs.forEach((d, i)=>{
-        const m = d.data();
-        const item=document.createElement('div'); item.className='admin-list-item';
-        const time=m.ts?new Date(m.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
-        const safeText = (m.text||'').replace(/</g,'&lt;');
+    // --- ② 画像庫管理 ---
+    const qPhotos=query(collection(db,'photos'),orderBy('ts','desc'));
+    onSnapshot(qPhotos,snap=>{
+      const grid=document.getElementById('adminGalleryGrid');
+      if(!grid) return;
+      if(snap.empty){ grid.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.8rem;padding:20px;grid-column:span 3">まだ写真がありません</div>'; return; }
+      grid.innerHTML='';
+      snap.docs.forEach(d=>{
+        const data=d.data();
+        const item=document.createElement('div');
+        item.className='gallery-item'+(data.featured?' featured':'');
         item.innerHTML=`
-          <div class="admin-num">${i+1}</div>
-          <div class="admin-name" style="line-height:1.4;">
-            <span style="font-size:0.7rem;color:#c070a0;">🌸 ${m.name}</span><br>
-            <span style="font-size:0.85rem;">${safeText}</span>
+          <img src="${data.url}" loading="lazy">
+          <div class="gallery-item-actions">
+            <button class="gallery-action-btn star" onclick="toggleFeatured('${d.id}',${!data.featured})" title="${data.featured?'フィルムロールから外す':'フィルムロールに追加'}">
+              ${data.featured?'⭐':'☆'}
+            </button>
+            <button class="gallery-action-btn trash" onclick="deletePhoto('${d.id}')" title="削除">🗑</button>
           </div>
-          <div class="admin-time">${time}</div>
-          <button onclick="deleteMessage('${d.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;padding:0 5px;"><i class="bi bi-trash-fill"></i></button>
-        `;
-        msgList.appendChild(item);
+          <span class="gallery-item-type ${data.type||'live'}">${data.type==='memory'?'思い出':'当日'}</span>`;
+        grid.appendChild(item);
+      });
+    });
+  });
+}
+function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
+
+function toggleFeatured(docId, newVal){
+  waitForFirebase((db,fs)=>{
+    const {doc,updateDoc}=fs;
+    updateDoc(doc(db,'photos',docId),{featured:newVal}).catch(()=>alert('更新に失敗しました'));
+  });
+}
+
+function deletePhoto(docId){
+  if(!confirm('この写真を削除しますか？')) return;
+  waitForFirebase((db,fs)=>{
+    const {doc,deleteDoc}=fs;
+    deleteDoc(doc(db,'photos',docId)).catch(()=>alert('削除に失敗しました'));
+  });
+}
+
+// ===== フォトセクション（3段階） =====
+function initPhotoSection(){
+  const el=document.getElementById('photoContent');
+  const omikuji=document.getElementById('omikujiCard');
+
+  // 後日はおみくじ非表示
+  if(isAfterEvent && omikuji) omikuji.style.display='none';
+
+  if(isBeforeEvent){
+    // ── 前日まで：思い出写真フィルムロール＋当日の予告 ──
+    el.innerHTML=`
+      <div class="film-section-title">🎞 みんなとの思い出</div>
+      <div class="film-section-sub">幹事セレクトの思い出写真🌸</div>
+      <div class="film-roll" id="filmRoll"><div class="film-frame film-frame-empty">🌸</div></div>
+      <div class="photo-announce">
+        <div class="photo-announce-icon">📸</div>
+        <div class="photo-announce-text">
+          <strong>当日はここに写真を投稿できます！</strong>
+          <span>来れない人もここを見れば<br>当日の様子がわかるよ🌸</span>
+        </div>
+      </div>`;
+    loadFilmRoll('memory');
+    return;
+  }
+
+  if(isEventDay2){
+    // ── 当日：思い出写真＋当日写真＋投稿ボタン ──
+    el.innerHTML=`
+      <div class="film-section-title">🎞 みんなとの思い出</div>
+      <div class="film-section-sub">幹事セレクトの思い出写真</div>
+      <div class="film-roll" id="filmRollMemory"><div class="film-frame film-frame-empty">🌸</div></div>
+      <div style="margin-top:16px;">
+        <div class="film-section-title">📸 今日の写真</div>
+        <div class="film-section-sub">みんなの今をシェア！リアルタイム更新中</div>
+        <div class="film-roll" id="filmRollLive"><div class="film-frame film-frame-empty">🌸</div></div>
+      </div>
+      <input type="file" id="photoUploadInput" accept="image/*" capture="environment" style="display:none">
+      <button class="btn-photo-upload" onclick="document.getElementById('photoUploadInput').click()">
+        📷 今日の写真を投稿する
+      </button>
+      <div id="photoUploadStatus" style="font-size:0.72rem;color:#a06080;text-align:center;margin-top:8px;display:none;"></div>`;
+    loadFilmRoll('memory','filmRollMemory');
+    loadFilmRoll('live','filmRollLive');
+    document.getElementById('photoUploadInput').addEventListener('change', e=>uploadPhoto(e,'live'));
+    return;
+  }
+
+  if(isAfterEvent){
+    // ── 後日：エモコピー＋全写真まとめてフィルムロール ──
+    el.innerHTML=`
+      <div class="emo-copy-wrap">
+        <span class="emo-copy-deco">🌸</span>
+        <div class="emo-copy-main">去る人も残る人も<br>あの春は永遠に</div>
+        <div class="emo-copy-sub">2026年4月4日<br>ヨロリアンみんなで過ごした桜の記憶</div>
+      </div>
+      <div style="margin-top:18px;">
+        <div class="film-section-title">🎞 あの日の記録</div>
+        <div class="film-section-sub">← スワイプして全部見てね</div>
+        <div class="film-roll" id="filmRoll"><div class="film-frame film-frame-empty">🌸</div></div>
+      </div>
+      <input type="file" id="photoUploadInput" accept="image/*" style="display:none">
+      <button class="btn-photo-upload" style="margin-top:14px;background:rgba(255,255,255,0.7);color:#c070a0;border:1.5px solid rgba(255,183,197,0.5);box-shadow:none;font-family:'Zen Maru Gothic',sans-serif;font-size:0.85rem;font-weight:700;" onclick="document.getElementById('photoUploadInput').click()">
+        📷 あの日の写真を追加する
+      </button>
+      <div id="photoUploadStatus" style="font-size:0.72rem;color:#a06080;text-align:center;margin-top:8px;display:none;"></div>`;
+    loadFilmRoll(null,'filmRoll'); // type問わず全部featured
+    document.getElementById('photoUploadInput').addEventListener('change', e=>uploadPhoto(e,'live'));
+  }
+}
+
+function loadFilmRoll(type, rollId='filmRoll'){
+  waitForFirebase((db,fs)=>{
+    const {collection,onSnapshot,query,orderBy,where}=fs;
+    let q;
+    if(type){
+      q=query(collection(db,'photos'),where('featured','==',true),where('type','==',type),orderBy('ts','asc'));
+    } else {
+      q=query(collection(db,'photos'),where('featured','==',true),orderBy('ts','asc'));
+    }
+    onSnapshot(q,snap=>{
+      const roll=document.getElementById(rollId);
+      if(!roll) return;
+      if(snap.empty){ roll.innerHTML='<div class="film-frame film-frame-empty">🌸</div>'; return; }
+      roll.innerHTML='';
+      snap.docs.forEach(d=>{
+        const data=d.data();
+        const frame=document.createElement('div');
+        frame.className='film-frame';
+        const badge=data.type==='memory'
+          ?'<span class="film-type-badge memory">思い出</span>'
+          :'<span class="film-type-badge live">当日</span>';
+        frame.innerHTML=`<img src="${data.url}" loading="lazy"><${badge}`;
+        frame.querySelector('img').addEventListener('click',()=>openLightbox(data.url));
+        roll.appendChild(frame);
       });
     });
   });
 }
 
-function deleteRSVP(docId) {
-  if(!confirm('この参加表明を削除しますか？')) return;
-  waitForFirebase((db, fs) => {
-    const { doc, deleteDoc } = fs;
-    deleteDoc(doc(db, 'rsvp', docId)).catch(err => alert('削除に失敗しました'));
-  });
+async function uploadPhoto(e, type='live'){
+  const file=e.target.files[0]; if(!file) return;
+  const statusEl=document.getElementById('photoUploadStatus');
+  statusEl.style.display='block'; statusEl.textContent='⏳ アップロード中...';
+  const name=localStorage.getItem(NAME_KEY)||'ヨロリアン';
+  const fd=new FormData();
+  fd.append('file',file);
+  fd.append('upload_preset',CLOUDINARY_PRESET);
+  try{
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(data.secure_url){
+      waitForFirebase((db,fs)=>{
+        const {collection,addDoc,serverTimestamp}=fs;
+        addDoc(collection(db,'photos'),{url:data.secure_url,publicId:data.public_id,name,type,featured:false,ts:serverTimestamp()});
+      });
+      statusEl.textContent='✅ 投稿完了！幹事が確認後に表示されます🌸';
+    } else {
+      statusEl.textContent='❌ 失敗しました。再試行してください';
+    }
+  }catch(err){ statusEl.textContent='❌ エラーが発生しました'; }
+  setTimeout(()=>{statusEl.style.display='none'; e.target.value='';},4000);
 }
 
-function deleteMessage(docId) {
-  if(!confirm('このメッセージを削除しますか？')) return;
-  waitForFirebase((db, fs) => {
-    const { doc, deleteDoc } = fs;
-    deleteDoc(doc(db, 'messages', docId)).catch(err => alert('削除に失敗しました'));
-  });
+function openLightbox(url){
+  const lb=document.createElement('div'); lb.className='lightbox';
+  lb.innerHTML=`<div class="lightbox-inner"><button class="lightbox-close" onclick="this.closest('.lightbox').remove()">✕</button><img src="${url}"></div>`;
+  lb.addEventListener('click',e=>{ if(e.target===lb) lb.remove(); });
+  document.body.appendChild(lb);
 }
 
-function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
+// フォトセクション初期化
+initPhotoSection();
 
 // ===== Live Photo アップロード（幹事用） =====
 document.getElementById('livePhotoInput').addEventListener('change', async(e)=>{
@@ -842,7 +1058,29 @@ document.getElementById('livePhotoInput').addEventListener('change', async(e)=>{
   }catch(err){ status.textContent='❌ エラーが発生しました'; }
   setTimeout(()=>{status.style.display='none'; e.target.value='';},3000);
 });
+
+// ===== 思い出写真アップロード（幹事用） =====
+document.getElementById('memoryPhotoInput').addEventListener('change', async(e)=>{
+  const file=e.target.files[0]; if(!file)return;
+  const status=document.getElementById('memoryUploadStatus');
+  status.style.display='block'; status.textContent='⏳ アップロード中...';
+  const fd=new FormData();
+  fd.append('file',file);
+  fd.append('upload_preset',CLOUDINARY_PRESET);
+  try{
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(data.secure_url){
+      waitForFirebase((db,fs)=>{
+        const {collection,addDoc,serverTimestamp}=fs;
+        addDoc(collection(db,'photos'),{url:data.secure_url,publicId:data.public_id,name:'幹事',type:'memory',featured:false,ts:serverTimestamp()});
+      });
+      status.textContent='✅ アップ完了！画像庫で⭐してね🌸';
+    } else { status.textContent='❌ 失敗しました'; }
+  }catch(err){ status.textContent='❌ エラーが発生しました'; }
+  setTimeout(()=>{status.style.display='none'; e.target.value='';},4000);
+});
 </script>
 
-</body>
+
 </html>
