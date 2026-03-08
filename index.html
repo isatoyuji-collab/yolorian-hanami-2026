@@ -240,7 +240,7 @@
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp, updateDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyABVzb-96iPwmhAiMxFW7xj98pt54lzhF0",
@@ -256,7 +256,7 @@ const db = getFirestore(app);
 
 // Firebaseをグローバルに公開
 window._db = db;
-window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp };
+window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, setDoc, getDoc, serverTimestamp, updateDoc, deleteDoc, where };
 </script>
 </head>
 <body>
@@ -459,7 +459,7 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       <div style="background:white;border-radius:20px;padding:16px;margin-bottom:20px;border:1px solid rgba(255,183,197,0.3);">
         <div style="font-size:0.72rem;font-weight:700;color:#c070a0;margin-bottom:6px;">🎞 思い出写真を追加（フィルムロール用）</div>
         <div style="font-size:0.65rem;color:#a06080;margin-bottom:10px;">アップ後に画像庫で⭐すると表示されます</div>
-        <input type="file" id="memoryPhotoInput" accept="image/*" style="display:none">
+        <input type="file" id="memoryPhotoInput" accept="image/*" multiple style="display:none">
         <button onclick="document.getElementById('memoryPhotoInput').click()" style="width:100%;padding:12px;border-radius:14px;border:2px dashed rgba(255,183,197,0.6);background:rgba(255,240,244,0.5);color:#c070a0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">
           🖼 思い出写真をアップ
         </button>
@@ -826,6 +826,7 @@ function closeAdminModal(){ document.getElementById('adminModal').style.display=
 
 function openAdminPanel(){
   document.getElementById('adminPanel').style.display='block';
+  document.querySelector('.header-contacts').style.display='none';
   waitForFirebase((db,fs)=>{
     const {collection,onSnapshot,query,orderBy,doc,updateDoc,deleteDoc,where}=fs;
 
@@ -892,7 +893,10 @@ function openAdminPanel(){
     });
   });
 }
-function closeAdminPanel(){ document.getElementById('adminPanel').style.display='none'; }
+function closeAdminPanel(){
+  document.getElementById('adminPanel').style.display='none';
+  document.querySelector('.header-contacts').style.display='flex';
+}
 
 function toggleFeatured(docId, newVal){
   waitForFirebase((db,fs)=>{
@@ -945,7 +949,7 @@ function initPhotoSection(){
         <div class="film-section-sub">みんなの今をシェア！リアルタイム更新中</div>
         <div class="film-roll" id="filmRollLive"><div class="film-frame film-frame-empty">🌸</div></div>
       </div>
-      <input type="file" id="photoUploadInput" accept="image/*" capture="environment" style="display:none">
+      <input type="file" id="photoUploadInput" accept="image/*" multiple style="display:none">
       <button class="btn-photo-upload" onclick="document.getElementById('photoUploadInput').click()">
         📷 今日の写真を投稿する
       </button>
@@ -969,7 +973,7 @@ function initPhotoSection(){
         <div class="film-section-sub">← スワイプして全部見てね</div>
         <div class="film-roll" id="filmRoll"><div class="film-frame film-frame-empty">🌸</div></div>
       </div>
-      <input type="file" id="photoUploadInput" accept="image/*" style="display:none">
+      <input type="file" id="photoUploadInput" accept="image/*" multiple style="display:none">
       <button class="btn-photo-upload" style="margin-top:14px;background:rgba(255,255,255,0.7);color:#c070a0;border:1.5px solid rgba(255,183,197,0.5);box-shadow:none;font-family:'Zen Maru Gothic',sans-serif;font-size:0.85rem;font-weight:700;" onclick="document.getElementById('photoUploadInput').click()">
         📷 あの日の写真を追加する
       </button>
@@ -1009,26 +1013,32 @@ function loadFilmRoll(type, rollId='filmRoll'){
 }
 
 async function uploadPhoto(e, type='live'){
-  const file=e.target.files[0]; if(!file) return;
+  const files=[...e.target.files]; if(!files.length) return;
   const statusEl=document.getElementById('photoUploadStatus');
-  statusEl.style.display='block'; statusEl.textContent='⏳ アップロード中...';
+  statusEl.style.display='block';
+  statusEl.textContent=`⏳ アップロード中… 0/${files.length}`;
   const name=localStorage.getItem(NAME_KEY)||'ヨロリアン';
-  const fd=new FormData();
-  fd.append('file',file);
-  fd.append('upload_preset',CLOUDINARY_PRESET);
-  try{
-    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
-    const data=await res.json();
-    if(data.secure_url){
-      waitForFirebase((db,fs)=>{
-        const {collection,addDoc,serverTimestamp}=fs;
-        addDoc(collection(db,'photos'),{url:data.secure_url,publicId:data.public_id,name,type,featured:false,ts:serverTimestamp()});
-      });
-      statusEl.textContent='✅ 投稿完了！幹事が確認後に表示されます🌸';
-    } else {
-      statusEl.textContent='❌ 失敗しました。再試行してください';
-    }
-  }catch(err){ statusEl.textContent='❌ エラーが発生しました'; }
+  let done=0, failed=0;
+  for(const file of files){
+    const fd=new FormData();
+    fd.append('file',file);
+    fd.append('upload_preset',CLOUDINARY_PRESET);
+    try{
+      const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+      const data=await res.json();
+      if(data.secure_url){
+        await new Promise(resolve=>waitForFirebase((db,fs)=>{
+          const {collection,addDoc,serverTimestamp}=fs;
+          addDoc(collection(db,'photos'),{url:data.secure_url,publicId:data.public_id,name,type,featured:false,ts:serverTimestamp()}).then(resolve).catch(resolve);
+        }));
+        done++;
+      } else { failed++; }
+    }catch(err){ failed++; }
+    statusEl.textContent=`⏳ アップロード中… ${done}/${files.length}`;
+  }
+  statusEl.textContent = failed===0
+    ? `✅ ${done}枚投稿完了！幹事が確認後に表示されます🌸`
+    : `⚠️ ${done}枚成功 / ${failed}枚失敗`;
   setTimeout(()=>{statusEl.style.display='none'; e.target.value='';},4000);
 }
 
@@ -1059,25 +1069,32 @@ document.getElementById('livePhotoInput').addEventListener('change', async(e)=>{
   setTimeout(()=>{status.style.display='none'; e.target.value='';},3000);
 });
 
-// ===== 思い出写真アップロード（幹事用） =====
+// ===== 思い出写真アップロード（幹事用・複数枚対応） =====
 document.getElementById('memoryPhotoInput').addEventListener('change', async(e)=>{
-  const file=e.target.files[0]; if(!file)return;
+  const files=[...e.target.files]; if(!files.length)return;
   const status=document.getElementById('memoryUploadStatus');
-  status.style.display='block'; status.textContent='⏳ アップロード中...';
-  const fd=new FormData();
-  fd.append('file',file);
-  fd.append('upload_preset',CLOUDINARY_PRESET);
-  try{
-    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
-    const data=await res.json();
-    if(data.secure_url){
-      waitForFirebase((db,fs)=>{
-        const {collection,addDoc,serverTimestamp}=fs;
-        addDoc(collection(db,'photos'),{url:data.secure_url,publicId:data.public_id,name:'幹事',type:'memory',featured:false,ts:serverTimestamp()});
-      });
-      status.textContent='✅ アップ完了！画像庫で⭐してね🌸';
-    } else { status.textContent='❌ 失敗しました'; }
-  }catch(err){ status.textContent='❌ エラーが発生しました'; }
+  status.style.display='block'; status.textContent=`⏳ アップロード中… 0/${files.length}`;
+  let done=0, failed=0;
+  for(const file of files){
+    const fd=new FormData();
+    fd.append('file',file);
+    fd.append('upload_preset',CLOUDINARY_PRESET);
+    try{
+      const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:fd});
+      const data=await res.json();
+      if(data.secure_url){
+        await new Promise(resolve=>waitForFirebase((db,fs)=>{
+          const {collection,addDoc,serverTimestamp}=fs;
+          addDoc(collection(db,'photos'),{url:data.secure_url,publicId:data.public_id,name:'幹事',type:'memory',featured:false,ts:serverTimestamp()}).then(resolve).catch(resolve);
+        }));
+        done++;
+      } else { failed++; }
+    }catch(err){ failed++; }
+    status.textContent=`⏳ アップロード中… ${done}/${files.length}`;
+  }
+  status.textContent = failed===0
+    ? `✅ ${done}枚アップ完了！画像庫で⭐してね🌸`
+    : `⚠️ ${done}枚成功 / ${failed}枚失敗`;
   setTimeout(()=>{status.style.display='none'; e.target.value='';},4000);
 });
 </script>
