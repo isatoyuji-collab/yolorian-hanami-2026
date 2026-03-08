@@ -188,10 +188,28 @@
   .emo-copy-main{font-family:'Dela Gothic One',sans-serif;font-size:1.2rem;color:var(--sakura-deep);line-height:1.6;letter-spacing:0.04em;text-shadow:0 2px 12px rgba(240,114,154,0.2);}
   .emo-copy-sub{font-size:0.72rem;color:#b080a0;margin-top:10px;line-height:1.8;}
   /* ライトボックス */
-  .lightbox{position:fixed;inset:0;z-index:400;background:rgba(18,8,20,0.93);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade-in 0.2s ease;}
+  .lightbox{position:fixed;inset:0;z-index:600;background:rgba(18,8,20,0.93);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade-in 0.2s ease;}
   .lightbox-inner{position:relative;}
   .lightbox-inner img{max-width:100%;max-height:80vh;border-radius:18px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
   .lightbox-close{position:absolute;top:-16px;right:-16px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:1.1rem;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+
+  /* みんなの写真モーダル */
+  .photo-modal{position:fixed;inset:0;z-index:550;background:rgba(18,8,20,0.92);display:flex;flex-direction:column;animation:fade-in 0.2s ease;}
+  .photo-modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 20px 14px;flex-shrink:0;}
+  .photo-modal-title{font-family:'Dela Gothic One',sans-serif;font-size:1rem;color:white;}
+  .photo-modal-sub{font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px;}
+  .photo-modal-close{background:rgba(255,255,255,0.12);border:none;color:white;border-radius:12px;padding:8px 16px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;}
+  .photo-modal-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:0 3px 20px;align-content:start;}
+  .photo-modal-item{aspect-ratio:1/1;overflow:hidden;cursor:pointer;background:rgba(255,183,197,0.1);}
+  .photo-modal-item img{width:100%;height:100%;object-fit:cover;transition:transform 0.15s;}
+  .photo-modal-item:active img{transform:scale(0.95);}
+  .photo-modal-empty{color:rgba(255,255,255,0.4);font-size:0.85rem;text-align:center;padding:40px 20px;grid-column:span 3;}
+
+  /* みんなの写真ボタン */
+  .btn-gallery-open{width:100%;padding:14px;border-radius:18px;border:1.5px solid rgba(255,183,197,0.5);background:rgba(255,255,255,0.65);color:#c070a0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;}
+  .btn-gallery-open:active{transform:scale(0.97);}
+  .gallery-count-badge{background:linear-gradient(135deg,#ff7eb3,#f0729a);color:white;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:4px;}
+
   /* 幹事パネル画像庫 */
   .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
   .gallery-item{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:rgba(255,183,197,0.15);}
@@ -939,29 +957,28 @@ function initPhotoSection(){
   }
 
   if(isEventDay2){
-    // ── 当日：思い出写真＋当日写真＋投稿ボタン ──
+    // ── 当日：思い出フィルムロール＋みんなの写真ボタン＋投稿ボタン ──
     el.innerHTML=`
       <div class="film-section-title">🎞 みんなとの思い出</div>
       <div class="film-section-sub">幹事セレクトの思い出写真</div>
       <div class="film-roll" id="filmRollMemory"><div class="film-frame film-frame-empty">🌸</div></div>
-      <div style="margin-top:16px;">
-        <div class="film-section-title">📸 今日の写真</div>
-        <div class="film-section-sub">みんなの今をシェア！リアルタイム更新中</div>
-        <div class="film-roll" id="filmRollLive"><div class="film-frame film-frame-empty">🌸</div></div>
-      </div>
+      <button class="btn-gallery-open" onclick="openPhotoGallery('live')">
+        📸 みんながアップした写真を見る
+        <span class="gallery-count-badge" id="livePhotoCount">0</span>
+      </button>
       <input type="file" id="photoUploadInput" accept="image/*" multiple style="display:none">
       <button class="btn-photo-upload" onclick="document.getElementById('photoUploadInput').click()">
         📷 今日の写真を投稿する
       </button>
       <div id="photoUploadStatus" style="font-size:0.72rem;color:#a06080;text-align:center;margin-top:8px;display:none;"></div>`;
     loadFilmRoll('memory','filmRollMemory');
-    loadFilmRoll('live','filmRollLive');
+    loadLivePhotoCount();
     document.getElementById('photoUploadInput').addEventListener('change', e=>uploadPhoto(e,'live'));
     return;
   }
 
   if(isAfterEvent){
-    // ── 後日：エモコピー＋全写真まとめてフィルムロール ──
+    // ── 後日：エモコピー＋フィルムロール＋みんなの写真ボタン ──
     el.innerHTML=`
       <div class="emo-copy-wrap">
         <span class="emo-copy-deco">🌸</span>
@@ -970,15 +987,20 @@ function initPhotoSection(){
       </div>
       <div style="margin-top:18px;">
         <div class="film-section-title">🎞 あの日の記録</div>
-        <div class="film-section-sub">← スワイプして全部見てね</div>
+        <div class="film-section-sub">幹事セレクション ← スワイプ</div>
         <div class="film-roll" id="filmRoll"><div class="film-frame film-frame-empty">🌸</div></div>
       </div>
+      <button class="btn-gallery-open" onclick="openPhotoGallery('live')">
+        📸 みんながアップした写真を全部見る
+        <span class="gallery-count-badge" id="livePhotoCount">0</span>
+      </button>
       <input type="file" id="photoUploadInput" accept="image/*" multiple style="display:none">
-      <button class="btn-photo-upload" style="margin-top:14px;background:rgba(255,255,255,0.7);color:#c070a0;border:1.5px solid rgba(255,183,197,0.5);box-shadow:none;font-family:'Zen Maru Gothic',sans-serif;font-size:0.85rem;font-weight:700;" onclick="document.getElementById('photoUploadInput').click()">
+      <button class="btn-photo-upload" style="background:rgba(255,255,255,0.7);color:#c070a0;border:1.5px solid rgba(255,183,197,0.5);box-shadow:none;font-family:'Zen Maru Gothic',sans-serif;font-size:0.85rem;font-weight:700;" onclick="document.getElementById('photoUploadInput').click()">
         📷 あの日の写真を追加する
       </button>
       <div id="photoUploadStatus" style="font-size:0.72rem;color:#a06080;text-align:center;margin-top:8px;display:none;"></div>`;
-    loadFilmRoll(null,'filmRoll'); // type問わず全部featured
+    loadFilmRoll(null,'filmRoll');
+    loadLivePhotoCount();
     document.getElementById('photoUploadInput').addEventListener('change', e=>uploadPhoto(e,'live'));
   }
 }
@@ -1049,6 +1071,56 @@ function openLightbox(url){
   lb.innerHTML=`<div class="lightbox-inner"><button class="lightbox-close" onclick="this.closest('.lightbox').remove()">✕</button><img src="${url}"></div>`;
   lb.addEventListener('click',e=>{ if(e.target===lb) lb.remove(); });
   document.body.appendChild(lb);
+}
+
+// みんなの写真モーダル
+function openPhotoGallery(type){
+  const modal=document.createElement('div');
+  modal.className='photo-modal';
+  modal.innerHTML=`
+    <div class="photo-modal-header">
+      <div>
+        <div class="photo-modal-title">📸 みんながアップした写真</div>
+        <div class="photo-modal-sub">長押しで保存できます</div>
+      </div>
+      <button class="photo-modal-close" onclick="this.closest('.photo-modal').remove()">閉じる</button>
+    </div>
+    <div class="photo-modal-grid" id="photoModalGrid">
+      <div class="photo-modal-empty">読み込み中…</div>
+    </div>`;
+  document.body.appendChild(modal);
+
+  waitForFirebase((db,fs)=>{
+    const {collection,onSnapshot,query,orderBy}=fs;
+    const q=query(collection(db,'photos'),orderBy('ts','desc'));
+    onSnapshot(q,snap=>{
+      const grid=modal.querySelector('#photoModalGrid');
+      if(!grid) return;
+      const docs=snap.docs.filter(d=>type?d.data().type===type:true);
+      if(!docs.length){ grid.innerHTML='<div class="photo-modal-empty">まだ写真がありません🌸</div>'; return; }
+      grid.innerHTML='';
+      docs.forEach(d=>{
+        const data=d.data();
+        const item=document.createElement('div');
+        item.className='photo-modal-item';
+        item.innerHTML=`<img src="${data.url}" loading="lazy">`;
+        item.addEventListener('click',()=>openLightbox(data.url));
+        grid.appendChild(item);
+      });
+    });
+  });
+}
+
+// 枚数バッジ更新
+function loadLivePhotoCount(){
+  waitForFirebase((db,fs)=>{
+    const {collection,onSnapshot,query,orderBy}=fs;
+    onSnapshot(query(collection(db,'photos'),orderBy('ts','desc')),snap=>{
+      const count=snap.docs.filter(d=>d.data().type==='live').length;
+      const badge=document.getElementById('livePhotoCount');
+      if(badge) badge.textContent=count;
+    });
+  });
 }
 
 // フォトセクション初期化
