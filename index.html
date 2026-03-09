@@ -288,8 +288,8 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     <div class="live-badge">● LIVE 開催中</div>
   </div>
   <div class="header-contacts">
-    <a href="https://line.me/ti/p/【幹事ID】" class="hc-btn line"><i class="bi bi-line"></i> LINEで連絡</a>
-    <a href="tel:00000000000" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
+    <a href="https://line.me/ti/p/ikCKJNMUPU" class="hc-btn line"><i class="bi bi-line"></i> LINEで連絡</a>
+    <a href="tel:08030281863" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
   </div>
 </header>
 
@@ -309,17 +309,29 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
       <div class="tree-svg-area" id="treeSvgArea">
         <svg id="treeSvg" width="280" height="220" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
           <!-- 幹 -->
-          <path d="M130 210 Q128 170 125 150 Q122 130 130 110" stroke="#a0724a" stroke-width="10" fill="none" stroke-linecap="round"/>
-          <path d="M150 210 Q152 170 155 150 Q158 130 150 110" stroke="#a0724a" stroke-width="10" fill="none" stroke-linecap="round"/>
-          <path d="M130 210 L150 210" stroke="#a0724a" stroke-width="10" fill="none"/>
-          <!-- 枝 -->
-          <path d="M138 150 Q110 140 85 120" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <path d="M140 140 Q115 110 100 85" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <path d="M142 130 Q145 95 140 70" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <path d="M144 140 Q170 110 185 85" stroke="#8b5e3c" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <path d="M142 150 Q168 138 195 122" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M132 215 Q129 175 126 152 Q123 132 132 108" stroke="#a0724a" stroke-width="11" fill="none" stroke-linecap="round"/>
+          <path d="M148 215 Q151 175 154 152 Q157 132 148 108" stroke="#a0724a" stroke-width="11" fill="none" stroke-linecap="round"/>
+          <path d="M132 215 L148 215" stroke="#a0724a" stroke-width="11" fill="none"/>
+          <!-- 太い枝 -->
+          <path d="M136 152 Q108 142 82 122" stroke="#8b5e3c" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M140 142 Q112 112 96 86" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M140 132 Q143 96 140 68" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M144 142 Q172 112 188 86" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M144 152 Q170 140 198 124" stroke="#8b5e3c" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <!-- 細い枝 -->
+          <path d="M82 122 Q68 108 58 132" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M96 86 Q82 68 78 48" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M96 86 Q104 66 108 58" stroke="#9b6e4c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M140 68 Q136 46 140 26" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M140 68 Q122 50 112 42" stroke="#9b6e4c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M140 68 Q158 50 168 42" stroke="#9b6e4c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M188 86 Q198 68 205 48" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M188 86 Q178 66 172 58" stroke="#9b6e4c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M198 124 Q214 108 222 130" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M78 48 Q62 38 48 148" stroke="#9b6e4c" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+          <path d="M205 48 Q218 38 232 146" stroke="#9b6e4c" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
           <!-- 芝生 -->
-          <ellipse cx="140" cy="212" rx="90" ry="8" fill="#c8e6a0" opacity="0.6"/>
+          <ellipse cx="140" cy="215" rx="95" ry="7" fill="#c8e6a0" opacity="0.55"/>
           <!-- 花グループ（JSで追加） -->
           <g id="bloomGroup"></g>
         </svg>
@@ -515,72 +527,116 @@ const isEventDay2   = now >= EVENT_DAY && now < AFTER_DAY;
 const isAfterEvent  = now >= AFTER_DAY;
 
 // ===== 花びら背景 =====
-const emojis=['🌸','🌺','🌷','✿','❀'];
+const emojis=['🌸','🌸','🌸','🌺','🌷'];
 const cont=document.getElementById('petalContainer');
-for(let i=0;i<18;i++){
-  const p=document.createElement('div'); p.className='petal';
-  p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-  p.style.left=Math.random()*100+'%';
-  p.style.animationDuration=(5+Math.random()*8)+'s';
-  p.style.animationDelay=(-Math.random()*10)+'s';
-  p.style.fontSize=(1+Math.random()*0.8)+'rem';
-  p.style.opacity=0.4+Math.random()*0.4;
-  cont.appendChild(p);
+let currentPetalCount=0;
+function updatePetals(n){
+  const target=Math.min(8+n*2,60);
+  while(currentPetalCount<target){
+    const p=document.createElement('div'); p.className='petal';
+    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDuration=(4+Math.random()*7)+'s';
+    p.style.animationDelay=(-Math.random()*12)+'s';
+    p.style.fontSize=(0.9+Math.random()*1.0)+'rem';
+    p.style.opacity=0.5+Math.random()*0.4;
+    cont.appendChild(p);
+    currentPetalCount++;
+  }
 }
+updatePetals(0);
 
-// ===== 桜の木 =====
+// ===== 桜の木（豪華版） =====
 const branchTips=[
-  {x:85,y:120},{x:100,y:85},{x:140,y:70},{x:185,y:85},{x:195,y:122},
-  {x:70,y:108},{x:92,y:72},{x:140,y:55},{x:192,y:70},{x:210,y:110},
-  {x:60,y:130},{x:108,y:60},{x:140,y:42},{x:172,y:60},{x:220,y:128},
-  {x:50,y:145},{x:78,y:50},{x:140,y:30},{x:202,y:50},{x:230,y:143},
-  {x:42,y:158},{x:65,y:38},{x:215,y:38},{x:238,y:156},{x:140,y:18},
-  {x:112,y:40},{x:168,y:40},{x:95,y:100},{x:185,y:100},{x:140,y:85},
+  // 第1層（メイン枝先）
+  {x:85,y:120,r:16},{x:100,y:85,r:18},{x:140,y:68,r:20},{x:185,y:85,r:18},{x:195,y:122,r:16},
+  // 第2層
+  {x:68,y:108,r:15},{x:90,y:70,r:16},{x:140,y:52,r:18},{x:192,y:68,r:16},{x:212,y:108,r:15},
+  // 第3層
+  {x:58,y:132,r:14},{x:105,y:58,r:15},{x:140,y:38,r:17},{x:175,y:58,r:15},{x:222,y:130,r:14},
+  // 第4層
+  {x:48,y:148,r:13},{x:76,y:48,r:14},{x:140,y:26,r:16},{x:205,y:48,r:14},{x:232,y:146,r:13},
+  // 第5層（枝間を埋める）
+  {x:72,y:158,r:12},{x:62,y:38,r:13},{x:218,y:38,r:13},{x:240,y:158,r:12},{x:140,y:16,r:14},
+  {x:110,y:42,r:13},{x:170,y:42,r:13},{x:94,y:102,r:12},{x:188,y:102,r:12},{x:140,y:88,r:14},
+  // 中間を埋める
+  {x:78,y:90,r:12},{x:200,y:90,r:12},{x:120,y:60,r:13},{x:160,y:60,r:13},
+  {x:115,y:100,r:11},{x:165,y:100,r:11},{x:125,y:80,r:12},{x:155,y:80,r:12},
 ];
 let bloomCount=4;
 const bloomGroup=document.getElementById('bloomGroup');
 
 function renderBlooms(count){
   bloomGroup.innerHTML='';
-  const colors=['#ffb7c5','#ff90aa','#ffd6e0','#ff7eb3','#ffccd5'];
+  const colorSets=[
+    ['#ffb7c5','#ff90aa','#ffd6e0','#ff7eb3'],
+    ['#ffccd5','#ffaec0','#ffe0eb','#ff6fa8'],
+    ['#ffd6e0','#ffb3c6','#ffe8f0','#ff85b5'],
+  ];
   for(let i=0;i<Math.min(count,branchTips.length);i++){
     const tip=branchTips[i];
-    const c=colors[i%colors.length];
+    const r=tip.r||14;
+    const cols=colorSets[i%colorSets.length];
+    // 外側の花びら（大きめ）
+    for(let p=0;p<5;p++){
+      const angle=(p/5)*Math.PI*2 - Math.PI/2;
+      const px=tip.x+Math.cos(angle)*r*0.7;
+      const py=tip.y+Math.sin(angle)*r*0.7;
+      const ellipse=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+      ellipse.setAttribute('cx',px); ellipse.setAttribute('cy',py);
+      ellipse.setAttribute('rx', r*0.55); ellipse.setAttribute('ry', r*0.4);
+      ellipse.setAttribute('fill',cols[p%cols.length]);
+      ellipse.setAttribute('opacity','0.92');
+      const rot=(angle*180/Math.PI)+90;
+      ellipse.setAttribute('transform',`rotate(${rot},${px},${py})`);
+      bloomGroup.appendChild(ellipse);
+    }
+    // 内側の小花びら
     for(let p=0;p<5;p++){
       const angle=(p/5)*Math.PI*2;
-      const px=tip.x+Math.cos(angle)*7;
-      const py=tip.y+Math.sin(angle)*7;
-      const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
-      circle.setAttribute('cx',px); circle.setAttribute('cy',py);
-      circle.setAttribute('r','6'); circle.setAttribute('fill',c);
-      circle.setAttribute('opacity','0.9');
-      bloomGroup.appendChild(circle);
+      const px=tip.x+Math.cos(angle)*r*0.35;
+      const py=tip.y+Math.sin(angle)*r*0.35;
+      const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',px); c.setAttribute('cy',py);
+      c.setAttribute('r', r*0.22); c.setAttribute('fill','#ffeef4');
+      c.setAttribute('opacity','0.85');
+      bloomGroup.appendChild(c);
     }
+    // 中心のおしべ
     const center=document.createElementNS('http://www.w3.org/2000/svg','circle');
     center.setAttribute('cx',tip.x); center.setAttribute('cy',tip.y);
-    center.setAttribute('r','3.5'); center.setAttribute('fill','#fff0b0');
+    center.setAttribute('r', r*0.2); center.setAttribute('fill','#ffe066');
+    center.setAttribute('opacity','1');
     bloomGroup.appendChild(center);
   }
 }
 
 function addBloom(){
-  if(bloomCount>=branchTips.length) return;
-  bloomCount++;
-  renderBlooms(bloomCount);
+  // 満開でもエフェクトは必ず出す
   const area=document.getElementById('treeSvgArea');
   const rect=area.getBoundingClientRect();
-  for(let i=0;i<4;i++){
+  // 花びらを大量に飛ばす
+  for(let i=0;i<10;i++){
     const el=document.createElement('div');
-    el.className='bloom-particle'; el.textContent='🌸';
-    const tx=(Math.random()-0.5)*80+'px';
-    const ty=-(30+Math.random()*60)+'px';
+    el.className='bloom-particle';
+    el.textContent=['🌸','🌸','🌺','🌷'][Math.floor(Math.random()*4)];
+    el.style.fontSize=(0.9+Math.random()*0.8)+'rem';
+    const tx=(Math.random()-0.5)*140+'px';
+    const ty=-(40+Math.random()*100)+'px';
     el.style.setProperty('--tx',tx); el.style.setProperty('--ty',ty);
-    el.style.left=(rect.width/2+(Math.random()-0.5)*60)+'px';
-    el.style.top=(rect.height/2)+'px';
+    el.style.left=(rect.width/2+(Math.random()-0.5)*100)+'px';
+    el.style.top=(rect.height*0.6)+'px';
     area.style.position='relative';
     area.appendChild(el);
-    setTimeout(()=>el.remove(),1000);
+    setTimeout(()=>el.remove(),1200);
   }
+  // 木の花も増やす
+  if(bloomCount<branchTips.length){
+    bloomCount+=2;
+    renderBlooms(bloomCount);
+  }
+  // 花びら背景も少し増やす
+  updatePetals(currentPetalCount+3);
 }
 renderBlooms(bloomCount);
 
@@ -903,8 +959,7 @@ function closeCommentNameModal(){
 document.getElementById('commentNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitCommentName();});
 
 function _sendMessage(name, text){
-  const status=localStorage.getItem(RSVP_STATUS_KEY);
-  const displayName=(status==='go'||status==='maybe')&&name?name:'🌸 ヨロリアン';
+  const displayName = name ? name : '🌸 ヨロリアン';
   waitForFirebase((db,fs)=>{
     const {collection,addDoc,serverTimestamp}=fs;
     addDoc(collection(db,'messages'),{name:displayName,text,ts:serverTimestamp()}).catch(()=>{});
