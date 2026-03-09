@@ -297,7 +297,7 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
   </div>
   <div class="header-contacts">
     <a href="https://line.me/ti/p/ikCKJNMUPU" class="hc-btn line"><i class="bi bi-line"></i> LINEで連絡</a>
-    <a href="tel:08030281863" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
+    <a href="tel:00000000000" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
   </div>
 </header>
 
@@ -519,6 +519,14 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
           <div style="text-align:center;color:#c0a0b0;font-size:0.8rem;padding:20px;grid-column:span 3">読み込み中...</div>
         </div>
       </div>
+      <!-- 掲示板管理 -->
+      <div style="margin-top:32px;padding-top:20px;border-top:1px dashed rgba(255,183,197,0.6);">
+        <div style="font-size:0.75rem;font-weight:700;color:#c070a0;margin-bottom:6px;">💬 掲示板管理</div>
+        <div style="font-size:0.68rem;color:#a06080;margin-bottom:12px;">🗑をタップして不要なコメントを削除できます</div>
+        <div id="adminMessagesList" style="display:grid;gap:8px;">
+          <div style="text-align:center;color:#c0a0b0;font-size:0.8rem;padding:20px;">読み込み中...</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -561,25 +569,26 @@ updatePetals(0);
 
 // ===== 桜の木（豪華版） =====
 const branchTips=[
-  // メイン枝先（左・中・右）
-  {x:62,y:100,r:17},{x:140,y:72,r:18},{x:218,y:100,r:17},
-  // 第2層
-  {x:44,y:72,r:15},{x:62,y:65,r:14},{x:88,y:88,r:16},{x:192,y:88,r:16},{x:218,y:65,r:14},{x:236,y:72,r:15},
-  // 第3層
-  {x:78,y:52,r:14},{x:98,y:55,r:13},{x:112,y:80,r:15},{x:168,y:80,r:15},{x:182,y:52,r:14},{x:202,y:55,r:13},
-  // 第4層（細枝先）
-  {x:108,y:44,r:13},{x:120,y:48,r:12},{x:140,y:72,r:14},{x:160,y:44,r:13},{x:172,y:48,r:12},
-  // 頂点付近
-  {x:140,y:52,r:13},{x:125,y:38,r:12},{x:155,y:38,r:12},{x:140,y:28,r:13},
-  // 左端
-  {x:48,y:58,r:12},{x:55,y:45,r:11},{x:70,y:38,r:11},
-  // 右端
-  {x:232,y:58,r:12},{x:225,y:45,r:11},{x:210,y:38,r:11},
-  // 中間埋め
-  {x:95,y:70,r:12},{x:185,y:70,r:12},{x:115,y:62,r:11},{x:165,y:62,r:11},
-  {x:130,y:55,r:11},{x:150,y:55,r:11},{x:105,y:90,r:12},{x:175,y:90,r:12},
+  // 枝先（上部）
+  {x:44,y:72,r:17},{x:62,y:65,r:16},{x:78,y:52,r:15},{x:98,y:55,r:14},
+  {x:108,y:44,r:15},{x:120,y:48,r:14},{x:125,y:38,r:15},{x:140,y:28,r:16},
+  {x:155,y:38,r:15},{x:160,y:44,r:14},{x:172,y:48,r:14},{x:182,y:52,r:15},
+  {x:202,y:55,r:14},{x:218,y:65,r:16},{x:236,y:72,r:17},
+  // 枝の中間
+  {x:62,y:100,r:16},{x:88,y:88,r:15},{x:112,y:80,r:15},{x:140,y:72,r:16},
+  {x:168,y:80,r:15},{x:192,y:88,r:15},{x:218,y:100,r:16},
+  // 太枝の上
+  {x:95,y:130,r:15},{x:185,y:130,r:15},{x:140,y:112,r:15},
+  // 太枝の中間（ここが今スカスカな部分）
+  {x:75,y:140,r:13},{x:108,y:125,r:13},{x:140,y:130,r:13},
+  {x:172,y:125,r:13},{x:205,y:140,r:13},
+  // 幹上部
+  {x:130,y:148,r:11},{x:150,y:148,r:11},
+  // 細かく埋める
+  {x:55,y:82,r:12},{x:80,y:70,r:12},{x:115,y:62,r:12},{x:165,y:62,r:12},
+  {x:200,y:70,r:12},{x:225,y:82,r:12},
 ];
-let bloomCount=4;
+let bloomCount=18;
 const bloomGroup=document.getElementById('bloomGroup');
 
 function renderBlooms(count){
@@ -1079,6 +1088,28 @@ function openAdminPanel(){
           </div>
           <span class="gallery-item-type ${data.type||'live'}">${data.type==='memory'?'思い出':'当日'}</span>`;
         grid.appendChild(item);
+      });
+    });
+
+    // --- ③ 掲示板管理 ---
+    const qMsgs=query(collection(db,'messages'),orderBy('ts','desc'),limit(50));
+    onSnapshot(qMsgs,snap=>{
+      const ml=document.getElementById('adminMessagesList');
+      if(!ml) return;
+      if(snap.empty){ ml.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.8rem;padding:20px">まだコメントがありません</div>'; return; }
+      ml.innerHTML='';
+      snap.docs.forEach(d=>{
+        const data=d.data();
+        const time=data.ts?new Date(data.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
+        const item=document.createElement('div');
+        item.style.cssText='display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.6);border-radius:14px;padding:10px 12px;border:1px solid rgba(255,183,197,0.2);';
+        item.innerHTML=`
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.68rem;font-weight:700;color:#c070a0;">🌸 ${data.name||'ヨロリアン'} <span style="font-weight:400;color:#c0a0b0;">${time}</span></div>
+            <div style="font-size:0.8rem;margin-top:2px;word-break:break-all;">${(data.text||'').replace(/</g,'&lt;')}</div>
+          </div>
+          <button onclick="deleteMessage('${d.id}')" style="background:none;border:none;color:#e05070;font-size:1.1rem;cursor:pointer;flex-shrink:0;padding:4px;"><i class="bi bi-trash-fill"></i></button>`;
+        ml.appendChild(item);
       });
     });
   });
