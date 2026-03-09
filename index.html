@@ -151,14 +151,22 @@
   .message-input:focus{border-color:var(--sakura-deep);background:rgba(255,255,255,0.9);}
   .btn-post{background:linear-gradient(135deg,#ff7eb3,#f0729a);color:white;border:none;border-radius:14px;width:46px;font-size:1.1rem;cursor:pointer;transition:all 0.15s;}
   .btn-post:active{transform:scale(0.9);}
-  .messages-list{display:grid;gap:10px;}
-  .message-bubble{background:rgba(255,255,255,0.65);border-radius:18px;padding:12px 16px;border:1px solid rgba(255,183,197,0.25);animation:pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+  .messages-list{display:grid;gap:8px;max-height:340px;overflow-y:auto;padding-right:4px;-webkit-overflow-scrolling:touch;}
+  .messages-list::-webkit-scrollbar{width:4px;}
+  .messages-list::-webkit-scrollbar-track{background:rgba(255,183,197,0.1);border-radius:4px;}
+  .messages-list::-webkit-scrollbar-thumb{background:rgba(240,114,154,0.3);border-radius:4px;}
+  .message-bubble{background:rgba(255,255,255,0.65);border-radius:18px;padding:10px 14px;border:1px solid rgba(255,183,197,0.25);animation:pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);}
   @keyframes pop-in{0%{transform:scale(0.85) translateY(8px);opacity:0;}100%{transform:scale(1) translateY(0);opacity:1;}}
-  .msg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+  .msg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
   .msg-name{font-size:0.72rem;font-weight:700;color:#c070a0;}
   .msg-time{font-size:0.65rem;color:#c0a0b0;}
   .msg-text{font-size:0.85rem;line-height:1.5;}
-  .footer-spacer{height:60px;}
+  .msg-reply-to{font-size:0.72rem;color:#a080a0;background:rgba(255,183,197,0.2);border-left:3px solid #ffb7c5;padding:3px 8px;border-radius:0 8px 8px 0;margin-bottom:5px;}
+  .msg-footer{display:flex;justify-content:flex-end;margin-top:5px;}
+  .btn-reply{background:none;border:1px solid rgba(255,183,197,0.5);color:#c070a0;font-size:0.65rem;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;padding:3px 10px;border-radius:999px;cursor:pointer;}
+  .btn-reply:active{background:rgba(255,183,197,0.2);}
+  .reply-hint{font-size:0.7rem;color:#c070a0;background:rgba(255,183,197,0.15);border-radius:10px;padding:5px 12px;margin-bottom:8px;display:none;align-items:center;justify-content:space-between;}
+  .reply-hint-cancel{background:none;border:none;color:#a06080;font-size:0.8rem;cursor:pointer;padding:0 4px;}
 
   /* ===== PHOTO SECTION ===== */
   .film-section-title{font-family:'Dela Gothic One',sans-serif;font-size:0.95rem;color:var(--sakura-deep);margin-bottom:4px;}
@@ -308,30 +316,35 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
     <div class="tree-wrap">
       <div class="tree-svg-area" id="treeSvgArea">
         <svg id="treeSvg" width="280" height="220" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
-          <!-- 幹 -->
-          <path d="M132 215 Q129 175 126 152 Q123 132 132 108" stroke="#a0724a" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <path d="M148 215 Q151 175 154 152 Q157 132 148 108" stroke="#a0724a" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <path d="M132 215 L148 215" stroke="#a0724a" stroke-width="11" fill="none"/>
-          <!-- 太い枝 -->
-          <path d="M136 152 Q108 142 82 122" stroke="#8b5e3c" stroke-width="6" fill="none" stroke-linecap="round"/>
-          <path d="M140 142 Q112 112 96 86" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <path d="M140 132 Q143 96 140 68" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <path d="M144 142 Q172 112 188 86" stroke="#8b5e3c" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <path d="M144 152 Q170 140 198 124" stroke="#8b5e3c" stroke-width="6" fill="none" stroke-linecap="round"/>
-          <!-- 細い枝 -->
-          <path d="M82 122 Q68 108 58 132" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M96 86 Q82 68 78 48" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M96 86 Q104 66 108 58" stroke="#9b6e4c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M140 68 Q136 46 140 26" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M140 68 Q122 50 112 42" stroke="#9b6e4c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M140 68 Q158 50 168 42" stroke="#9b6e4c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M188 86 Q198 68 205 48" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M188 86 Q178 66 172 58" stroke="#9b6e4c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M198 124 Q214 108 222 130" stroke="#9b6e4c" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M78 48 Q62 38 48 148" stroke="#9b6e4c" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
-          <path d="M205 48 Q218 38 232 146" stroke="#9b6e4c" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
           <!-- 芝生 -->
-          <ellipse cx="140" cy="215" rx="95" ry="7" fill="#c8e6a0" opacity="0.55"/>
+          <ellipse cx="140" cy="213" rx="88" ry="7" fill="#c8e6a0" opacity="0.55"/>
+          <!-- 幹 -->
+          <rect x="133" y="155" width="14" height="58" rx="7" fill="#a0724a"/>
+          <!-- 太枝（左右に広がる） -->
+          <path d="M140 158 Q118 145 95 130" stroke="#8b5e3c" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M140 158 Q162 145 185 130" stroke="#8b5e3c" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M140 150 Q140 128 140 112" stroke="#8b5e3c" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <!-- 中枝 -->
+          <path d="M95 130 Q75 115 62 100" stroke="#9b6e4c" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M95 130 Q88 108 88 88" stroke="#9b6e4c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M185 130 Q205 115 218 100" stroke="#9b6e4c" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M185 130 Q192 108 192 88" stroke="#9b6e4c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M140 112 Q122 98 112 80" stroke="#9b6e4c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M140 112 Q158 98 168 80" stroke="#9b6e4c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <!-- 細枝 -->
+          <path d="M62 100 Q48 88 44 72" stroke="#a87848" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M62 100 Q58 82 62 65" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M88 88 Q80 68 78 52" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M88 88 Q95 70 98 55" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M112 80 Q105 60 108 44" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M112 80 Q118 62 120 48" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M140 112 Q140 90 140 72" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M168 80 Q162 60 160 44" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M168 80 Q175 62 172 48" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M192 88 Q185 68 182 52" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M192 88 Q200 70 202 55" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M218 100 Q222 82 218 65" stroke="#a87848" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M218 100 Q232 88 236 72" stroke="#a87848" stroke-width="2" fill="none" stroke-linecap="round"/>
           <!-- 花グループ（JSで追加） -->
           <g id="bloomGroup"></g>
         </svg>
@@ -406,15 +419,15 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
   <!-- MESSAGE BOARD -->
   <div class="glass-card">
     <div class="section-label"><i class="bi bi-chat-heart-fill"></i> Message Board / 一言どうぞ！</div>
+    <div class="reply-hint" id="replyHint">
+      <span id="replyHintText">返信先：</span>
+      <button class="reply-hint-cancel" onclick="cancelReply()">✕</button>
+    </div>
     <div class="message-input-wrap">
       <input class="message-input" type="text" id="msgInput" placeholder="一言メッセージを入力…" maxlength="50">
       <button class="btn-post" onclick="postMessage()">🌸</button>
     </div>
-    <div class="messages-list" id="messagesList">
-      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">13:42</span></div><div class="msg-text">お疲れ様でした！絶対行きます！！</div></div>
-      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">13:55</span></div><div class="msg-text">レジャーシート持っていくね〜</div></div>
-      <div class="message-bubble"><div class="msg-header"><span class="msg-name">🌸 ヨロリアン</span><span class="msg-time">14:01</span></div><div class="msg-text">みんなと最後にお花見できて嬉しい🌸</div></div>
-    </div>
+    <div class="messages-list" id="messagesList"></div>
   </div>
 
   <!-- OMIKUJI（後日は非表示） -->
@@ -548,20 +561,23 @@ updatePetals(0);
 
 // ===== 桜の木（豪華版） =====
 const branchTips=[
-  // 第1層（メイン枝先）
-  {x:85,y:120,r:16},{x:100,y:85,r:18},{x:140,y:68,r:20},{x:185,y:85,r:18},{x:195,y:122,r:16},
+  // メイン枝先（左・中・右）
+  {x:62,y:100,r:17},{x:140,y:72,r:18},{x:218,y:100,r:17},
   // 第2層
-  {x:68,y:108,r:15},{x:90,y:70,r:16},{x:140,y:52,r:18},{x:192,y:68,r:16},{x:212,y:108,r:15},
+  {x:44,y:72,r:15},{x:62,y:65,r:14},{x:88,y:88,r:16},{x:192,y:88,r:16},{x:218,y:65,r:14},{x:236,y:72,r:15},
   // 第3層
-  {x:58,y:132,r:14},{x:105,y:58,r:15},{x:140,y:38,r:17},{x:175,y:58,r:15},{x:222,y:130,r:14},
-  // 第4層
-  {x:48,y:148,r:13},{x:76,y:48,r:14},{x:140,y:26,r:16},{x:205,y:48,r:14},{x:232,y:146,r:13},
-  // 第5層（枝間を埋める）
-  {x:72,y:158,r:12},{x:62,y:38,r:13},{x:218,y:38,r:13},{x:240,y:158,r:12},{x:140,y:16,r:14},
-  {x:110,y:42,r:13},{x:170,y:42,r:13},{x:94,y:102,r:12},{x:188,y:102,r:12},{x:140,y:88,r:14},
-  // 中間を埋める
-  {x:78,y:90,r:12},{x:200,y:90,r:12},{x:120,y:60,r:13},{x:160,y:60,r:13},
-  {x:115,y:100,r:11},{x:165,y:100,r:11},{x:125,y:80,r:12},{x:155,y:80,r:12},
+  {x:78,y:52,r:14},{x:98,y:55,r:13},{x:112,y:80,r:15},{x:168,y:80,r:15},{x:182,y:52,r:14},{x:202,y:55,r:13},
+  // 第4層（細枝先）
+  {x:108,y:44,r:13},{x:120,y:48,r:12},{x:140,y:72,r:14},{x:160,y:44,r:13},{x:172,y:48,r:12},
+  // 頂点付近
+  {x:140,y:52,r:13},{x:125,y:38,r:12},{x:155,y:38,r:12},{x:140,y:28,r:13},
+  // 左端
+  {x:48,y:58,r:12},{x:55,y:45,r:11},{x:70,y:38,r:11},
+  // 右端
+  {x:232,y:58,r:12},{x:225,y:45,r:11},{x:210,y:38,r:11},
+  // 中間埋め
+  {x:95,y:70,r:12},{x:185,y:70,r:12},{x:115,y:62,r:11},{x:165,y:62,r:11},
+  {x:130,y:55,r:11},{x:150,y:55,r:11},{x:105,y:90,r:12},{x:175,y:90,r:12},
 ];
 let bloomCount=4;
 const bloomGroup=document.getElementById('bloomGroup');
@@ -889,50 +905,57 @@ function closeNameModal(){
 document.getElementById('modalNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitRSVPName();});
 
 // ===== 掲示板（Firestore） =====
+let replyTarget=null; // {name, text}
+
 waitForFirebase((db,fs)=>{
-  const {collection,onSnapshot,query,orderBy,limit,addDoc,serverTimestamp}=fs;
-  // 最新20件をリアルタイム購読
-  const q=query(collection(db,'messages'),orderBy('ts','desc'),limit(20));
-  let first=true;
+  const {collection,onSnapshot,query,orderBy,limit}=fs;
+  const q=query(collection(db,'messages'),orderBy('ts','desc'),limit(30));
   onSnapshot(q,snap=>{
-    if(first){
-      // 初回：全件描画
-      first=false;
-      const list=document.getElementById('messagesList');
-      list.innerHTML='';
-      snap.docs.reverse().forEach(d=>appendMessage(d.data()));
-    } else {
-      // 差分のみ追加
-      snap.docChanges().forEach(change=>{
-        if(change.type==='added') prependMessage(change.doc.data());
-      });
-    }
+    const list=document.getElementById('messagesList');
+    list.innerHTML='';
+    // descで取得済みなのでそのまま上から並べる（新しい順）
+    snap.docs.forEach(d=>{
+      const bubble=createBubble(d.id, d.data());
+      list.appendChild(bubble);
+    });
   });
 });
 
-function appendMessage(data){
-  const bubble=createBubble(data);
-  document.getElementById('messagesList').appendChild(bubble);
-}
-function prependMessage(data){
-  const bubble=createBubble(data);
-  bubble.style.animation='pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1)';
-  document.getElementById('messagesList').insertBefore(bubble,document.getElementById('messagesList').firstChild);
-}
-function createBubble(data){
+function createBubble(id, data){
   const bubble=document.createElement('div'); bubble.className='message-bubble';
-  const time = data.ts ? new Date(data.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}) : '--:--';
-  bubble.innerHTML=`<div class="msg-header"><span class="msg-name">🌸 ${data.name||'ヨロリアン'}</span><span class="msg-time">${time}</span></div><div class="msg-text">${(data.text||'').replace(/</g,'&lt;')}</div>`;
+  const time=data.ts?new Date(data.ts.toMillis()).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}):'--:--';
+  const replyHTML=data.replyTo?`<div class="msg-reply-to">↩ ${data.replyTo.name}：${(data.replyTo.text||'').replace(/</g,'&lt;').substring(0,20)}${data.replyTo.text&&data.replyTo.text.length>20?'…':''}</div>`:'';
+  bubble.innerHTML=`
+    <div class="msg-header">
+      <span class="msg-name">🌸 ${data.name||'ヨロリアン'}</span>
+      <span class="msg-time">${time}</span>
+    </div>
+    ${replyHTML}
+    <div class="msg-text">${(data.text||'').replace(/</g,'&lt;')}</div>
+    <div class="msg-footer">
+      <button class="btn-reply" onclick="setReply('${(data.name||'ヨロリアン').replace(/'/g,"\\'")}','${(data.text||'').replace(/'/g,"\\'").replace(/</g,'&lt;').substring(0,20)}')">↩ 返信</button>
+    </div>`;
   return bubble;
+}
+
+function setReply(name, text){
+  replyTarget={name, text};
+  const hint=document.getElementById('replyHint');
+  document.getElementById('replyHintText').textContent=`↩ ${name} への返信`;
+  hint.style.display='flex';
+  document.getElementById('msgInput').focus();
+}
+
+function cancelReply(){
+  replyTarget=null;
+  document.getElementById('replyHint').style.display='none';
 }
 
 function postMessage(){
   const input=document.getElementById('msgInput');
   const text=input.value.trim(); if(!text) return;
-
   const name=localStorage.getItem(NAME_KEY);
   if(!name){
-    // 名前未登録 → モーダルで聞く
     document.getElementById('commentNameModal').dataset.text=text;
     document.getElementById('commentNameModal').style.display='flex';
     setTimeout(()=>document.getElementById('commentNameInput').focus(),100);
@@ -959,11 +982,14 @@ function closeCommentNameModal(){
 document.getElementById('commentNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitCommentName();});
 
 function _sendMessage(name, text){
-  const displayName = name ? name : '🌸 ヨロリアン';
+  const displayName=name?name:'🌸 ヨロリアン';
+  const payload={name:displayName, text};
+  if(replyTarget) payload.replyTo={name:replyTarget.name, text:replyTarget.text};
   waitForFirebase((db,fs)=>{
     const {collection,addDoc,serverTimestamp}=fs;
-    addDoc(collection(db,'messages'),{name:displayName,text,ts:serverTimestamp()}).catch(()=>{});
+    addDoc(collection(db,'messages'),{...payload, ts:serverTimestamp()}).catch(()=>{});
   });
+  cancelReply();
   addBloom();
 }
 document.getElementById('msgInput').addEventListener('keydown',e=>{if(e.key==='Enter')postMessage();});
