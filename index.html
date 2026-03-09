@@ -297,7 +297,7 @@ window._fsLib = { collection, addDoc, onSnapshot, query, orderBy, limit, doc, se
   </div>
   <div class="header-contacts">
     <a href="https://line.me/ti/p/ikCKJNMUPU" class="hc-btn line"><i class="bi bi-line"></i> LINEで連絡</a>
-    <a href="tel:00000000000" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
+    <a href="tel:08030281863" class="hc-btn tel"><i class="bi bi-telephone-fill"></i> 緊急電話</a>
   </div>
 </header>
 
@@ -569,24 +569,30 @@ updatePetals(0);
 
 // ===== 桜の木（豪華版） =====
 const branchTips=[
-  // 枝先（上部）
-  {x:44,y:72,r:17},{x:62,y:65,r:16},{x:78,y:52,r:15},{x:98,y:55,r:14},
-  {x:108,y:44,r:15},{x:120,y:48,r:14},{x:125,y:38,r:15},{x:140,y:28,r:16},
-  {x:155,y:38,r:15},{x:160,y:44,r:14},{x:172,y:48,r:14},{x:182,y:52,r:15},
-  {x:202,y:55,r:14},{x:218,y:65,r:16},{x:236,y:72,r:17},
-  // 枝の中間
-  {x:62,y:100,r:16},{x:88,y:88,r:15},{x:112,y:80,r:15},{x:140,y:72,r:16},
-  {x:168,y:80,r:15},{x:192,y:88,r:15},{x:218,y:100,r:16},
-  // 太枝の上
-  {x:95,y:130,r:15},{x:185,y:130,r:15},{x:140,y:112,r:15},
-  // 太枝の中間（ここが今スカスカな部分）
-  {x:75,y:140,r:13},{x:108,y:125,r:13},{x:140,y:130,r:13},
-  {x:172,y:125,r:13},{x:205,y:140,r:13},
-  // 幹上部
-  {x:130,y:148,r:11},{x:150,y:148,r:11},
+  // まず全体をまんべんなく（下〜上の順）
+  // 太枝・幹上部（下エリア）
+  {x:95,y:130,r:16},{x:185,y:130,r:16},{x:140,y:115,r:16},
+  {x:75,y:142,r:14},{x:112,y:126,r:14},{x:168,y:126,r:14},{x:205,y:142,r:14},
+  {x:130,y:150,r:12},{x:150,y:150,r:12},
+  // 中エリア
+  {x:62,y:100,r:17},{x:140,y:75,r:17},{x:218,y:100,r:17},
+  {x:88,y:90,r:15},{x:192,y:90,r:15},
+  {x:112,y:82,r:15},{x:168,y:82,r:15},
+  // 上エリア
+  {x:62,y:65,r:15},{x:218,y:65,r:15},
+  {x:44,y:72,r:14},{x:236,y:72,r:14},
+  {x:78,y:52,r:14},{x:202,y:52,r:14},
+  {x:98,y:55,r:14},{x:182,y:55,r:14},
+  // 頂点
+  {x:108,y:44,r:14},{x:172,y:44,r:14},
+  {x:120,y:48,r:13},{x:160,y:48,r:13},
+  {x:125,y:38,r:14},{x:155,y:38,r:14},
+  {x:140,y:28,r:15},
   // 細かく埋める
-  {x:55,y:82,r:12},{x:80,y:70,r:12},{x:115,y:62,r:12},{x:165,y:62,r:12},
-  {x:200,y:70,r:12},{x:225,y:82,r:12},
+  {x:55,y:82,r:12},{x:225,y:82,r:12},
+  {x:80,y:68,r:12},{x:200,y:68,r:12},
+  {x:115,y:62,r:12},{x:165,y:62,r:12},
+  {x:130,y:55,r:11},{x:150,y:55,r:11},
 ];
 let bloomCount=18;
 const bloomGroup=document.getElementById('bloomGroup');
@@ -1022,16 +1028,21 @@ function checkAdminPw(){
 document.getElementById('adminPwInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkAdminPw();});
 function closeAdminModal(){ document.getElementById('adminModal').style.display='none'; document.getElementById('adminPwInput').value=''; document.getElementById('adminError').style.display='none'; }
 
+let adminUnsubs=[];
+
 function openAdminPanel(){
+  // 既存リスナーを全解除
+  adminUnsubs.forEach(u=>u());
+  adminUnsubs=[];
+
   document.getElementById('adminPanel').style.display='flex';
   document.querySelector('.sticky-header').style.display='none';
   document.querySelector('.header-contacts').style.display='none';
   waitForFirebase((db,fs)=>{
-    const {collection,onSnapshot,query,orderBy,doc,updateDoc,deleteDoc,where}=fs;
+    const {collection,onSnapshot,query,orderBy,doc,updateDoc,deleteDoc,limit}=fs;
 
     // --- ① 参加者リスト ---
-    const q=query(collection(db,'rsvp'),orderBy('ts','asc'));
-    onSnapshot(q,snap=>{
+    const u1=onSnapshot(query(collection(db,'rsvp'),orderBy('ts','asc')),snap=>{
       const docs=snap.docs.map(d=>({id:d.id,...d.data()}));
       const goList=docs.filter(r=>r.status==='go');
       const maybeList=docs.filter(r=>r.status==='maybe');
@@ -1066,10 +1077,10 @@ function openAdminPanel(){
       }
       if(docs.length===0) list.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.85rem;padding:20px">まだ参加表明がありません</div>';
     });
+    adminUnsubs.push(u1);
 
     // --- ② 画像庫管理 ---
-    const qPhotos=query(collection(db,'photos'),orderBy('ts','desc'));
-    onSnapshot(qPhotos,snap=>{
+    const u2=onSnapshot(query(collection(db,'photos'),orderBy('ts','desc')),snap=>{
       const grid=document.getElementById('adminGalleryGrid');
       if(!grid) return;
       if(snap.empty){ grid.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.8rem;padding:20px;grid-column:span 3">まだ写真がありません</div>'; return; }
@@ -1090,10 +1101,10 @@ function openAdminPanel(){
         grid.appendChild(item);
       });
     });
+    adminUnsubs.push(u2);
 
     // --- ③ 掲示板管理 ---
-    const qMsgs=query(collection(db,'messages'),orderBy('ts','desc'),limit(50));
-    onSnapshot(qMsgs,snap=>{
+    const u3=onSnapshot(query(collection(db,'messages'),orderBy('ts','desc'),limit(50)),snap=>{
       const ml=document.getElementById('adminMessagesList');
       if(!ml) return;
       if(snap.empty){ ml.innerHTML='<div style="text-align:center;color:#c0a0b0;font-size:0.8rem;padding:20px">まだコメントがありません</div>'; return; }
@@ -1112,9 +1123,12 @@ function openAdminPanel(){
         ml.appendChild(item);
       });
     });
+    adminUnsubs.push(u3);
   });
 }
 function closeAdminPanel(){
+  adminUnsubs.forEach(u=>u());
+  adminUnsubs=[];
   document.getElementById('adminPanel').style.display='none';
   document.querySelector('.sticky-header').style.display='block';
   document.querySelector('.header-contacts').style.display='flex';
